@@ -2,26 +2,62 @@
     'use strict';
     var canvas,
         context,
-
         colors = {
             'grid' : 'rgb(220,220,220)',
             'font' : 'rgb(0,0,0)',
             'ui'   : 'rgb(220,220,220)'
         },
-
         grid = {
             'x'      : 9.5,
             'y'      : 9.5,
             'width'  : 390,
             'height' : 290,
-            'cell'   : 10
+            'cell'   : 10,
+            'cellw'  : 38,
+            'cellh'  : 28
         },
-
         player = {
             'x'  : 10,
             'y'  : 10,
         },
+        map = {
+            'legend' : {
+                '*' : 'rgb(0,0,0)',
+                '.' : 'rgb(255,255,255)'
+            },
+            'data' : ['**************************************',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '*....................................*',
+                      '**************************************'],
 
+            generate : function () {
+                // Random map generation
+            }
+        },
         draw = {
             grid : function () {
                 var x = grid.x,
@@ -41,13 +77,23 @@
                 context.stroke();
             },
 
-            at_cell : function (x, y, code) {
-                context.fillStyle = code;
+            map : function () {
+                var i, j;
+                for (i = 0; i < map.data.length; i = i + 1) {
+                    for (j = 0; j < map.data[i].length; j = j + 1) {
+                        draw.at_cell(j, i, map.data[i][j]);
+                    }
+                }
+            },
+
+            at_cell : function (x, y, cell) {
+                context.fillStyle = map.legend[cell];
                 context.fillRect(grid.x + (x * grid.cell),
                                  grid.y + (y * grid.cell),
                                  grid.cell,
                                  grid.cell
                                 );
+
             },
 
             ui : function (color, x, y, w, h) {
@@ -56,10 +102,10 @@
                 context.stroke();
             },
 
-            text: function (color, font, x, y, w, text) {
-                context.font = font;
-                context.strokeStyle = color;
-                context.fillText(text, x, y, w);
+            message: function (text) {
+                context.font = '12px sans-serif';
+                context.strokeStyle = colors.font;
+                context.fillText(text, 14.5, 314.5, 370);
             },
 
         },
@@ -80,7 +126,8 @@
             },
 
             update_map : function () {
-                draw.at_cell(player.x, player.y, 'rgb(0,0,0)');
+                draw.map();
+                draw.at_cell(player.x, player.y, '*');
 
             },
 
@@ -90,8 +137,7 @@
                 draw.grid(colors.grid, 9.5, 9.5, 390, 290, 10);
                 draw.ui(colors.ui, 9.5, 299.5, 380, 80);
 
-                draw.text(colors.font, "12px sans-serif", 14.5, 314.5, 370,
-                          'It is 5:00 pm. Time to go home.');
+                draw.message("It's 5:00 pm. Time to go home.");
                 logic.update_map();
 
             },
