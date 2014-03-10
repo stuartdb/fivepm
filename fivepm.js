@@ -103,13 +103,18 @@
                 context.strokeStyle = color;
                 context.stroke();
             },
+        },
 
-            message: function (text) {
-                context.font = '12px sans-serif';
-                context.strokeStyle = colors.font;
-                context.fillText(text, 14.5, 324.5, 370);
+        browser = {
+
+            debug : function (obj) {
+                console.log(obj);
             },
 
+            log : function (text) {
+                var p = document.getElementById('log');
+                p.innerHTML = text + '<br>' + p.innerHTML;
+            }
         },
 
         logic = {
@@ -149,12 +154,8 @@
                 canvas.width = canvas.width;
                 draw.grid(colors.grid, 9.5, 9.5, 390, 290, 10);
                 draw.ui(colors.ui, 9.5, 305.5, 380, 85);
-
-                draw.message("It's 5:00 pm. Time to go home.");
-                logic.update_map();
                 draw.map();
                 draw.at_cell(player.x, player.y, '@');
-
             },
 
             init : function () {
@@ -162,6 +163,10 @@
                 context = canvas.getContext('2d');
                 canvas.focus();
                 canvas.addEventListener('keydown', logic.update, false);
+
+                browser.log("It's 5:00 pm. Time to go home");
+                browser.log("Use WASD or IJKL to move around");
+                browser.log("Bump into objects to interact with them");
             },
 
         };
