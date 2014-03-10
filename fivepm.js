@@ -1,7 +1,7 @@
 (function () {
     'use strict';
-    var canvas = document.getElementById('fivepm'),
-        context = canvas.getContext('2d'),
+    var canvas,
+        context,
 
         colors = {
             'grid' : 'rgb(220,220,220)',
@@ -22,86 +22,89 @@
             'y'  : 10,
         },
 
-        map = '****************************';
+        draw = {
+            grid : function () {
+                var x = grid.x,
+                    y = grid.y;
 
-    function log_event(e) {
-        console.log(e.keyCode);
-    }
+                for (x; x < grid.width; x = x + grid.cell) {
+                    context.moveTo(x, grid.y);
+                    context.lineTo(x, grid.height);
+                }
 
+                for (y; y < grid.height; y = y + grid.cell) {
+                    context.moveTo(grid.x, y);
+                    context.lineTo(grid.width, y);
+                }
 
-    function handle_input(e) {
-        if (e.keyCode === 87) {
-            player.y = player.y - 1;
-        } else if (e.keyCode === 83) {
-            player.y = player.y + 1;
-        } else if (e.keyCode === 65) {
-            player.x = player.x - 1;
-        } else if (e.keyCode === 68) {
-            player.x = player.x + 1;
-        } else {
-            log_event(e);
-        }
-    }
+                context.strokeStyle = colors.grid;
+                context.stroke();
+            },
 
-    function draw_grid() {
-        var x = grid.x,
-            y = grid.y;
+            at_cell : function (x, y, code) {
+                context.fillStyle = code;
+                context.fillRect(grid.x + (x * grid.cell),
+                                 grid.y + (y * grid.cell),
+                                 grid.cell,
+                                 grid.cell
+                                );
+            },
 
-        for (x; x < grid.width; x = x + grid.cell) {
-            context.moveTo(x, grid.y);
-            context.lineTo(x, grid.height);
-        }
+            ui : function (color, x, y, w, h) {
+                context.strokeRect(x, y, w, h);
+                context.strokeStyle = color;
+                context.stroke();
+            },
 
-        for (y; y < grid.height; y = y + grid.cell) {
-            context.moveTo(grid.x, y);
-            context.lineTo(grid.width, y);
-        }
+            text: function (color, font, x, y, w, text) {
+                context.font = font;
+                context.strokeStyle = color;
+                context.fillText(text, x, y, w);
+            },
 
-        context.strokeStyle = colors.grid;
-        context.stroke();
-    }
+        },
 
-    function draw_at_grid_cell(x, y, code) {
-        context.fillStyle = code;
-        context.fillRect(grid.x + (x * grid.cell),
-                 grid.y + (y * grid.cell),
-                 grid.cell,
-                 grid.cell
-                );
-    }
+        logic = {
+            handle_input : function (e) {
+                if (e.keyCode === 87) {
+                    player.y = player.y - 1;
+                } else if (e.keyCode === 83) {
+                    player.y = player.y + 1;
+                } else if (e.keyCode === 65) {
+                    player.x = player.x - 1;
+                } else if (e.keyCode === 68) {
+                    player.x = player.x + 1;
+                } else {
+                    console.log(e.keyCode);
+                }
+            },
 
-    function draw_ui(color, x, y, w, h) {
-        context.strokeRect(x, y, w, h);
-        context.strokeStyle = color;
-        context.stroke();
-    }
+            update_map : function () {
+                draw.at_cell(player.x, player.y, 'rgb(0,0,0)');
 
-    function draw_text(color, font, x, y, w, text) {
-        context.font = font;
-        context.strokeStyle = color;
-        context.fillText(text, x, y, w);
-    }
+            },
 
-    function draw_fivepm() {
-        canvas.width = canvas.width;
-        draw_grid(colors.grid, 9.5, 9.5, 390, 290, 10);
-        draw_ui(colors.ui, 9.5, 299.5, 380, 80);
+            update : function (e) {
+                logic.handle_input(e);
+                canvas.width = canvas.width;
+                draw.grid(colors.grid, 9.5, 9.5, 390, 290, 10);
+                draw.ui(colors.ui, 9.5, 299.5, 380, 80);
 
-        draw_text(colors.font, "12px sans-serif", 14.5, 314.5, 370,
-                  'It is 5:00 pm. Time to go home.');
+                draw.text(colors.font, "12px sans-serif", 14.5, 314.5, 370,
+                          'It is 5:00 pm. Time to go home.');
+                logic.update_map();
 
-        draw_at_grid_cell(player.x, player.y, 'rgb(0,0,0)');
+            },
 
-    }
+            init : function () {
+                canvas = document.getElementById('fivepm');
+                context = canvas.getContext('2d');
+                canvas.focus();
+                canvas.addEventListener('keydown', logic.update, false);
+            },
 
-    function update(e) {
-        handle_input(e);
-        draw_fivepm();
-    }
+        };
 
-    canvas.focus();
-    canvas.addEventListener('keydown', update, false);
-
-    return draw_fivepm(map);
+    logic.init();
 
 }());
