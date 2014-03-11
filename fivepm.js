@@ -38,14 +38,32 @@
                      'Content', 'Glad', 'Flirty', 'Happy', 'Cheerful'],
             list : []
         },
+        util = {
+            random : function () {
+                return Math.random();
+            },
+            random_dec : function (min, max) {
+                return Math.random() * (max - min) + min;
+            },
+            random_int : function (min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+        },
         map = {
+            width  : grid.cellw,
+            height : grid.cellh,
             legend : {
-                '@' : { fixed : false, color : 'rgb(0,0,0)' },
-                '*' : { fixed : true, color : 'rgb(220,220,220)' },
-                '?' : { fixed : true, color : 'rgb(190,190,190)' },
-                '>' : { fixed : true, color : 'rgb(150,250,150)' },
-                '=' : { fixed : true, color : 'rgb(240,240,240)' },
-                '.' : { fixed : false, color : 'rgb(255,255,255)' },
+                '@' : { color : 'rgb(0,0,0)' },
+                '&' : { color : 'rgb(50,100,200)'},
+                '*' : { color : 'rgb(220,220,220)',
+                        wall  : true },
+                '?' : { color : 'rgb(190,190,190)' },
+                '>' : { color : 'rgb(150,250,150)',
+                        exit  : true },
+                '=' : { color : 'rgb(240,240,240)',
+                        wall  : true },
+                '.' : { color : 'rgb(255,255,255)',
+                        empty : true },
             },
             data : [],
             layout : ['**************************************',
@@ -75,17 +93,58 @@
                       '*..***....*.......?*..????..*...***..*',
                       '*...?*....*........*..????..*...*....*',
                       '*....*..??*.?.?????*........*...*??..*',
-                      '**************************************']
-        },
-        util = {
-            random : function () {
-                return Math.random();
+                      '**************************************'],
+
+            cell_in_bounds : function (x, y) {
+                var valid = false;
+
+                if (x >= 0 && x <= map.width) {
+                    if (y >= 0 && y <= map.height) {
+                        valid = true;
+                    }
+                }
+
+                return valid;
             },
-            random_dec : function (min, max) {
-                return Math.random() * (max - min) + min;
+
+            valid_cell : function (entity, x, y) {
+                var valid = false,
+                    cell;
+
+                if (map.cell_in_bounds(x, y) !== true) {
+                    return false;
+                }
+
+                cell = map.legend[map.data[y][x]];
+
+                if (cell.empty !== true) {
+                    return false;
+                }
+
+                // entity specific checks
+                if (entity === 'player') {
+                    valid =  true;
+                } else if (entity === 'npc') {
+                    valid = true;
+                }
+
+                return valid;
             },
-            random_int : function (min, max) {
-                return Math.floor(Math.random() * (max - min + 1)) + min;
+
+            random_loc : function (entity) {
+                var xy = {
+                    x : 0,
+                    y : 0,
+                };
+
+                xy.x = util.random_int(1, grid.cellw - 1);
+                xy.y = util.random_int(1, grid.cellh - 1);
+
+                if (map.valid_cell(entity, xy.x, xy.y) !== true) {
+                    xy = map.random_loc(entity);
+                }
+
+                return xy;
             }
         },
         draw = {
@@ -149,11 +208,18 @@
 
             generate_npcs : function () {
                 var i = 0,
-                    npcs = 0;
+                    npcs = 0,
+                    xy = {
+                        x : 0,
+                        y : 0
+                    };
 
                 npcs = util.random_int(10, 20);
 
                 for (i = 0; i < npcs; i = i + 1) {
+
+                    xy = map.random_loc('npc');
+
                     npc.list[i] = {
                         'name'   : npc.names[
                             util.random_int(0, npc.names.length - 1)
@@ -161,6 +227,8 @@
                         'mood'   : util.random_int(0, npc.moods.length - 1),
                         'social' : util.random_int(0, 100),
                         'dna'    : util.random_dec(0, 2),
+                        'x'      : xy.x,
+                        'y'      : xy.y
                     };
                 }
             },
