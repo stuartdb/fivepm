@@ -17,8 +17,26 @@
             'cellh'  : 28
         },
         player = {
-            'x'  : 36,
-            'y'  : 26,
+            'x'      : 36,
+            'y'      : 26,
+            'steps'  : 0,
+            'mood'   : 10,
+            'social' : 10,
+        },
+        npc = {
+            names : ['Alex', 'Andy', 'Ash', 'Bobbi', 'Cass', 'Cassi', 'Charli',
+                     'Chris', 'Danni', 'Eddy', 'Fran', 'Franki', 'Franni',
+                     'Freddi', 'Gabbi', 'Georgie', 'Izzi', 'Jacki', 'Jay',
+                     'Jess', 'Jerri', 'Joey', 'Joss', 'Kel', 'Kris', 'Liv',
+                     'Lou', 'Louie', 'Maddi', 'Mandi', 'Manni', 'Matti', 'Max',
+                     'Mel', 'Micki', 'Nat', 'Nicki', 'Oli', 'Pat', 'Patti',
+                     'Robbi', 'Ronni', 'Sacha', 'Sal', 'Sam', 'Sammi', 'Sandi',
+                     'Shelli', 'Terri', 'Theo', 'Val', 'Vic'],
+            moods : ['Infuriated', 'Angry', 'Frustrated', 'Annoyed', 'Uptight',
+                     'Anxious', 'Tense', 'Stressed', 'Withdrawn', 'Worried',
+                     'Disinterested', 'Indifferent', 'Mild', 'Calm', 'Relaxed',
+                     'Content', 'Glad', 'Flirty', 'Happy', 'Cheerful'],
+            list : []
         },
         map = {
             legend : {
@@ -58,6 +76,17 @@
                       '*...?*....*........*..????..*...*....*',
                       '*....*..??*.?.?????*........*...*??..*',
                       '**************************************']
+        },
+        util = {
+            random : function () {
+                return Math.random();
+            },
+            random_dec : function (min, max) {
+                return Math.random() * (max - min) + min;
+            },
+            random_int : function (min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
         },
         draw = {
             grid : function () {
@@ -118,6 +147,24 @@
 
         logic = {
 
+            generate_npcs : function () {
+                var i = 0,
+                    npcs = 0;
+
+                npcs = util.random_int(10, 20);
+
+                for (i = 0; i < npcs; i = i + 1) {
+                    npc.list[i] = {
+                        'name'   : npc.names[
+                            util.random_int(0, npc.names.length - 1)
+                        ],
+                        'mood'   : util.random_int(0, npc.moods.length - 1),
+                        'social' : util.random_int(0, 100),
+                        'dna'    : util.random_dec(0, 2),
+                    };
+                }
+            },
+
             update_player : function (x, y) {
                 if (x !== 0) {
                     if (map.data[player.y][player.x + x] === '.') {
@@ -145,7 +192,10 @@
 
             update : function (e) {
                 logic.handle_input(e);
-                canvas.width = canvas.width;
+
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                // canvas.width = canvas.width;
+
                 draw.grid(colors.grid, 9.5, 9.5, 390, 290, 10);
                 draw.ui(colors.ui, 9.5, 305.5, 380, 85);
 
@@ -156,6 +206,7 @@
 
             init : function () {
                 map.data = map.layout;
+                logic.generate_npcs();
 
                 canvas = document.getElementById('fivepm');
                 context = canvas.getContext('2d');
@@ -165,7 +216,7 @@
 
                 browser.log("It's 5:00 pm. Time to go home");
                 browser.log("Use WASD or IJKL to move around");
-                browser.log("Bump into objects to interact with them");
+                browser.log("Bump into people to interact with them");
             },
 
         };
