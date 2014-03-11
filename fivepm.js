@@ -20,17 +20,17 @@
             'x'  : 36,
             'y'  : 26,
         },
-        npcs = {},
         map = {
-            'legend' : {
-                '@' : 'rgb(0,0,0)',
-                '*' : 'rgb(220,220,220)',
-                '?' : 'rgb(190,190,190)',
-                '>' : 'rgb(150,250,150)',
-                '=' : 'rgb(240,240,240)',
-                '.' : 'rgb(255,255,255)',
+            legend : {
+                '@' : { fixed : false, color : 'rgb(0,0,0)' },
+                '*' : { fixed : true, color : 'rgb(220,220,220)' },
+                '?' : { fixed : true, color : 'rgb(190,190,190)' },
+                '>' : { fixed : true, color : 'rgb(150,250,150)' },
+                '=' : { fixed : true, color : 'rgb(240,240,240)' },
+                '.' : { fixed : false, color : 'rgb(255,255,255)' },
             },
-            'data' : ['**************************************',
+            data : [],
+            layout : ['**************************************',
                       '*??..*...........??=.................*',
                       '*....*............?=.................>',
                       '*..***............?=.................*',
@@ -89,7 +89,7 @@
             },
 
             at_cell : function (x, y, cell) {
-                context.fillStyle = map.legend[cell];
+                context.fillStyle = map.legend[cell].color;
                 context.fillRect(grid.x + (x * grid.cell),
                                  grid.y + (y * grid.cell),
                                  grid.cell,
@@ -143,24 +143,24 @@
                 }
             },
 
-            update_map : function () {
-
-
-            },
-
             update : function (e) {
                 logic.handle_input(e);
                 canvas.width = canvas.width;
                 draw.grid(colors.grid, 9.5, 9.5, 390, 290, 10);
                 draw.ui(colors.ui, 9.5, 305.5, 380, 85);
+
+
                 draw.map();
                 draw.at_cell(player.x, player.y, '@');
             },
 
             init : function () {
+                map.data = map.layout;
+
                 canvas = document.getElementById('fivepm');
                 context = canvas.getContext('2d');
                 canvas.focus();
+
                 canvas.addEventListener('keydown', logic.update, false);
 
                 browser.log("It's 5:00 pm. Time to go home");
