@@ -7,24 +7,38 @@
       body{
       font-family: sans-serif;
       }
-      #main {
+      #main{
       max-width: 600px;
       margin: 0 auto;
       }
-      canvas {
-      border: 1px solid;
+      #game{
+      max-width: 400px;
+      margin: 0 auto;
       }
-      p {
+      canvas{
+      margin: 0 auto;
+      }
+      canvas:focus{
+      outline: 0;
+      }
+      h1{
+      text-align: center;
+      }
+      #log{
       font-size: 12px;
+      padding: 9.5px;
+      margin: 0px;
       }
     </style>
   </head>
   <body>
     <div id="main">
+      <h1>fivepm</h1>
       <div id="game">
-        <h1>fivepm</h1>
-        <canvas id="fivepm" width="400" height="340" tabindex="1"></canvas>
-        <p id="log">Loading fivepm...</p>
+      <canvas id="fivepm" width="400" height="340" tabindex="1"></canvas>
+      <div id="logs">
+      <p id="log">Loading fivepm...</p>
+      </div>
       </div>
     </div>
   </body>
