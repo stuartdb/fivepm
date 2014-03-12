@@ -20,7 +20,7 @@
             'x'      : 36,
             'y'      : 26,
             'steps'  : 0,
-            'mood'   : 10,
+            'skill'  : 10,
             'social' : 10,
         },
         browser = {
@@ -31,6 +31,17 @@
             log : function (text) {
                 var p = document.getElementById('log');
                 p.innerHTML = text + '<br>' + p.innerHTML;
+            }
+        },
+        util = {
+            random : function () {
+                return Math.random();
+            },
+            random_dec : function (min, max) {
+                return Math.random() * (max - min) + min;
+            },
+            random_int : function (min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
             }
         },
         npc = {
@@ -48,18 +59,71 @@
                      'Content', 'Glad', 'Flirty', 'Happy', 'Cheerful'],
             list : [],
             interact : function (i) {
-                browser.log(npc.list[i]);
-            }
-        },
-        util = {
-            random : function () {
-                return Math.random();
-            },
-            random_dec : function (min, max) {
-                return Math.random() * (max - min) + min;
-            },
-            random_int : function (min, max) {
-                return Math.floor(Math.random() * (max - min + 1)) + min;
+                var n = npc.list[i],
+                    social_calc = 0,
+                    mood_calc = 0,
+                    rand_calc = 0,
+                    calc = 0,
+                    skill_mod = 0,
+                    social_mod = 0,
+                    new_social = 0,
+                    new_skill = 0;
+
+                browser.log(n.name +
+                            " seems " +
+                            npc.moods[n.mood].toLowerCase());
+
+                social_calc = player.social - n.social;
+                mood_calc = ((n.mood + 1) * (200 / npc.moods.length)) - 100;
+                rand_calc = util.random_int(-25, 25);
+                calc = mood_calc + n.dna + rand_calc;
+
+                browser.log('Their social status: ' + n.social);
+                browser.log('Your social status: ' + player.social);
+//                browser.log('Social calc: ' + social_calc);
+                browser.log('Mood calc: ' + mood_calc);
+                browser.log('DNA: ' + n.dna);
+                browser.log('Rand: ' + rand_calc);
+                browser.log('Calc: ' + calc);
+                browser.log('You attempt to chat...');
+
+                social_mod = Math.abs(Math.floor(social_calc / 20));
+                skill_mod = Math.floor(social_mod / 2);
+
+                new_skill = player.skill + skill_mod;
+                new_social = player.social + social_mod;
+
+                if (calc > 0) {
+                    browser.log('Success!');
+                    browser.log('Skill increased by ' + skill_mod);
+                    browser.log('Social Status increased by ' + skill_mod);
+
+                    if (new_skill > 100) {
+                        player.skill = 100;
+                    } else {
+                        player.skill = player.skill + skill_mod;
+                    }
+
+                    if (new_social > 100) {
+                        player.social = 100;
+                    } else {
+                        player.social = player.social + social_mod;
+                    }
+                }
+
+                if (calc <= 0) {
+                    browser.log('Failed!');
+                    browser.log('Social Status decreased by ' + skill_mod);
+
+                    if (new_social < 0) {
+                        player.social = 0;
+                    } else {
+                        player.social = player.social - social_mod;
+                    }
+                }
+
+                browser.log(player.social);
+                browser.log(player.skill);
             }
         },
         map = {
@@ -264,7 +328,7 @@
                         ],
                         'mood'   : util.random_int(0, npc.moods.length - 1),
                         'social' : util.random_int(0, 100),
-                        'dna'    : util.random_dec(0, 2),
+                        'dna'    : util.random_int(-50, 50),
                         'x'      : xy.x,
                         'y'      : xy.y
                     };
@@ -280,16 +344,18 @@
                     return;
                 }
 
-                if (cell.type === 'empty') {
-                    player.x = x;
-                    player.y = y;
-                } else if (cell.type === 'npc') {
-                    npc.interact(cell.npc);
-                }
+                player.x = x;
+                player.y = y;
             },
 
             interact : function () {
-                browser.log("Interacting at " + player.x + " " + player.y);
+                var cell = map.at_cell(player.x, player.y);
+
+                if (cell.type === 'empty') {
+                    browser.log("Nothing here");
+                } else if (cell.type === 'npc') {
+                    npc.interact(cell.npc);
+                }
             },
 
             handle_input : function (e) {
