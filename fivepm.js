@@ -176,6 +176,13 @@
                 }
             },
 
+            map_entities : function () {
+                var i = 0;
+                for (i = 0; i < npc.list.length; i = i + 1) {
+                    draw.at_cell(npc.list[i].x, npc.list[i].y, '&');
+                }
+            },
+
             at_cell : function (x, y, cell) {
                 context.fillStyle = map.legend[cell].color;
                 context.fillRect(grid.x + (x * grid.cell),
@@ -269,6 +276,7 @@
 
 
                 draw.map();
+                draw.map_entities();
                 draw.at_cell(player.x, player.y, '@');
             },
 
