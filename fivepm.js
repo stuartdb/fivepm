@@ -20,8 +20,8 @@
             'x'      : 36,
             'y'      : 26,
             'steps'  : 0,
-            'skill'  : 10,
-            'social' : 10,
+            'skill'  : 0,
+            'social' : 0,
         },
         browser = {
             debug : function (obj) {
@@ -243,8 +243,8 @@
         },
         draw = {
             all : function () {
-                draw.grid(colors.grid, 9.5, 9.5, 390, 290, 10);
-                draw.ui(colors.ui, 9.5, 305.5, 380, 85);
+                draw.grid();
+                draw.ui();
                 draw.map();
                 draw.map_entities();
             },
@@ -298,10 +298,15 @@
                                 );
             },
 
-            ui : function (color, x, y, w, h) {
-                context.strokeRect(x, y, w, h);
-                context.strokeStyle = color;
+            ui : function () {
+                context.strokeRect(9.5, 300, 380, 10);
+                context.strokeRect(9.5, 320, 380, 10);
+                context.strokeStyle = colors.ui;
                 context.stroke();
+
+                context.fillStyle = colors.ui;
+                context.fillRect(9.5, 320, player.social * 3.8, 10);
+                context.fillRect(9.5, 300, player.skill * 3.8, 10);
             },
         },
 
