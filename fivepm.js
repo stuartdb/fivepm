@@ -288,15 +288,21 @@
                 }
             },
 
+            interact : function () {
+                browser.log("Interacting at " + player.x + " " + player.y);
+            },
+
             handle_input : function (e) {
-                if (e.keyCode === 87) {
+                if (e.keyCode === 87 || e.keyCode === 73) {
                     logic.move_player(0, -1);
-                } else if (e.keyCode === 83) {
+                } else if (e.keyCode === 83 || e.keyCode === 75) {
                     logic.move_player(0, +1);
-                } else if (e.keyCode === 65) {
+                } else if (e.keyCode === 65 || e.keyCode === 74) {
                     logic.move_player(-1, 0);
-                } else if (e.keyCode === 68) {
+                } else if (e.keyCode === 68 || e.keyCode === 76) {
                     logic.move_player(+1, 0);
+                } else if (e.keyCode === 69 || e.keyCode === 85) {
+                    logic.interact();
                 }
             },
 
@@ -318,7 +324,7 @@
 
                 browser.log("It's 5:00 pm. Time to go home");
                 browser.log("Use WASD or IJKL to move around");
-                browser.log("Bump into people to interact with them");
+                browser.log("Use E or U to interact");
 
                 // sick of F5ing and seeing nothing until input, sort later
                 draw.all();
