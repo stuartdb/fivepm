@@ -23,6 +23,16 @@
             'mood'   : 10,
             'social' : 10,
         },
+        browser = {
+            debug : function (obj) {
+                console.log(obj);
+            },
+
+            log : function (text) {
+                var p = document.getElementById('log');
+                p.innerHTML = text + '<br>' + p.innerHTML;
+            }
+        },
         npc = {
             names : ['Alex', 'Andy', 'Ash', 'Bobbi', 'Cass', 'Cassi', 'Charli',
                      'Chris', 'Danni', 'Eddy', 'Fran', 'Franki', 'Franni',
@@ -36,7 +46,10 @@
                      'Anxious', 'Tense', 'Stressed', 'Withdrawn', 'Worried',
                      'Disinterested', 'Indifferent', 'Mild', 'Calm', 'Relaxed',
                      'Content', 'Glad', 'Flirty', 'Happy', 'Cheerful'],
-            list : []
+            list : [],
+            interact : function (i) {
+                browser.log(npc.list[i]);
+            }
         },
         util = {
             random : function () {
@@ -53,17 +66,13 @@
             width  : grid.cellw,
             height : grid.cellh,
             legend : {
-                '@' : { color : 'rgb(0,0,0)' },
-                '&' : { color : 'rgb(50,100,200)'},
-                '*' : { color : 'rgb(220,220,220)',
-                        wall  : true },
-                '?' : { color : 'rgb(190,190,190)' },
-                '>' : { color : 'rgb(150,250,150)',
-                        exit  : true },
-                '=' : { color : 'rgb(240,240,240)',
-                        wall  : true },
-                '.' : { color : 'rgb(255,255,255)',
-                        empty : true },
+                '@' : { type : 'player', color : 'rgb(0,0,0)' },
+                '&' : { type : 'npc',    color : 'rgb(50,100,200)' },
+                '*' : { type : 'solid',  color : 'rgb(220,220,220)' },
+                '?' : { type : 'solid',  color : 'rgb(190,190,190)' },
+                '>' : { type : 'solid',  color : 'rgb(150,250,150)' },
+                '=' : { type : 'solid',  color : 'rgb(240,240,240)' },
+                '.' : { type : 'empty',  color : 'rgb(255,255,255)' }
             },
             data : [],
             layout : ['**************************************',
@@ -117,7 +126,7 @@
 
                 cell = map.legend[map.data[y][x]];
 
-                if (cell.empty !== true) {
+                if (cell.type !== 'empty') {
                     return false;
                 }
 
@@ -145,6 +154,27 @@
                 }
 
                 return xy;
+            },
+
+            at_cell : function (x, y) {
+                var cell,
+                    i = 0;
+
+                cell = map.legend[map.data[y][x]];
+
+                if (cell.type !== 'empty') {
+                    return cell;
+                }
+
+                for (i = 0; i < npc.list.length; i = i + 1) {
+                    if (npc.list[i].x === x && npc.list[i].y === y) {
+                        cell = map.legend['&'];
+                        cell.npc = i;
+                        break;
+                    }
+                }
+
+                return cell;
             }
         },
         draw = {
@@ -202,17 +232,6 @@
             },
         },
 
-        browser = {
-
-            debug : function (obj) {
-                console.log(obj);
-            },
-
-            log : function (text) {
-                var p = document.getElementById('log');
-                p.innerHTML = text + '<br>' + p.innerHTML;
-            }
-        },
 
         logic = {
 
@@ -243,13 +262,20 @@
                 }
             },
 
-            move_player : function (x, y) {
-                x = player.x + x;
-                y = player.y + y;
+            move_player : function (mx, my) {
+                var x = player.x + mx,
+                    y = player.y + my,
+                    cell = map.at_cell(x, y);
 
-                if (map.valid_cell('player', x, y) === true) {
+                if (cell.type === 'solid') {
+                    return;
+                }
+
+                if (cell.type === 'empty') {
                     player.x = x;
                     player.y = y;
+                } else if (cell.type === 'npc') {
+                    npc.interact(cell.npc);
                 }
             },
 
