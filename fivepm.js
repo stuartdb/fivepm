@@ -65,9 +65,7 @@
                     rand_calc = 0,
                     calc = 0,
                     skill_mod = 0,
-                    social_mod = 0,
-                    new_social = 0,
-                    new_skill = 0;
+                    social_mod = 0;
 
                 browser.log(n.name +
                             " seems " +
@@ -90,21 +88,18 @@
                 social_mod = Math.abs(Math.floor(social_calc / 20));
                 skill_mod = Math.floor(social_mod / 2);
 
-                new_skill = player.skill + skill_mod;
-                new_social = player.social + social_mod;
-
                 if (calc > 0) {
                     browser.log('Success!');
                     browser.log('Skill increased by ' + skill_mod);
-                    browser.log('Social Status increased by ' + skill_mod);
+                    browser.log('Social Status increased by ' + social_mod);
 
-                    if (new_skill > 100) {
+                    if (player.skill + skill_mod > 100) {
                         player.skill = 100;
                     } else {
                         player.skill = player.skill + skill_mod;
                     }
 
-                    if (new_social > 100) {
+                    if (player.social + social_mod > 100) {
                         player.social = 100;
                     } else {
                         player.social = player.social + social_mod;
@@ -113,9 +108,9 @@
 
                 if (calc <= 0) {
                     browser.log('Failed!');
-                    browser.log('Social Status decreased by ' + skill_mod);
+                    browser.log('Social Status decreased by ' + social_mod);
 
-                    if (new_social < 0) {
+                    if (player.social - social_mod < 0) {
                         player.social = 0;
                     } else {
                         player.social = player.social - social_mod;
