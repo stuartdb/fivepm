@@ -178,6 +178,9 @@
 
             map_entities : function () {
                 var i = 0;
+
+                draw.at_cell(player.x, player.y, '@');
+
                 for (i = 0; i < npc.list.length; i = i + 1) {
                     draw.at_cell(npc.list[i].x, npc.list[i].y, '&');
                 }
@@ -240,28 +243,25 @@
                 }
             },
 
-            update_player : function (x, y) {
-                if (x !== 0) {
-                    if (map.data[player.y][player.x + x] === '.') {
-                        player.x = player.x + x;
-                    }
-                }
-                if (y !== 0) {
-                    if (map.data[player.y + y][player.x] === '.') {
-                        player.y = player.y + y;
-                    }
+            move_player : function (x, y) {
+                x = player.x + x;
+                y = player.y + y;
+
+                if (map.valid_cell('player', x, y) === true) {
+                    player.x = x;
+                    player.y = y;
                 }
             },
 
             handle_input : function (e) {
                 if (e.keyCode === 87) {
-                    logic.update_player(0, -1);
+                    logic.move_player(0, -1);
                 } else if (e.keyCode === 83) {
-                    logic.update_player(0, +1);
+                    logic.move_player(0, +1);
                 } else if (e.keyCode === 65) {
-                    logic.update_player(-1, 0);
+                    logic.move_player(-1, 0);
                 } else if (e.keyCode === 68) {
-                    logic.update_player(+1, 0);
+                    logic.move_player(+1, 0);
                 }
             },
 
@@ -269,15 +269,12 @@
                 logic.handle_input(e);
 
                 context.clearRect(0, 0, canvas.width, canvas.height);
-                // canvas.width = canvas.width;
 
                 draw.grid(colors.grid, 9.5, 9.5, 390, 290, 10);
                 draw.ui(colors.ui, 9.5, 305.5, 380, 85);
 
-
                 draw.map();
                 draw.map_entities();
-                draw.at_cell(player.x, player.y, '@');
             },
 
             init : function () {
