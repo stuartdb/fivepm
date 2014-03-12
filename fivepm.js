@@ -178,6 +178,15 @@
             }
         },
         draw = {
+            all : function () {
+                draw.grid(colors.grid, 9.5, 9.5, 390, 290, 10);
+                draw.ui(colors.ui, 9.5, 305.5, 380, 85);
+                draw.map();
+                draw.map_entities();
+            },
+            clear : function () {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+            },
             grid : function () {
                 var x = grid.x,
                     y = grid.y;
@@ -293,14 +302,8 @@
 
             update : function (e) {
                 logic.handle_input(e);
-
-                context.clearRect(0, 0, canvas.width, canvas.height);
-
-                draw.grid(colors.grid, 9.5, 9.5, 390, 290, 10);
-                draw.ui(colors.ui, 9.5, 305.5, 380, 85);
-
-                draw.map();
-                draw.map_entities();
+                draw.clear();
+                draw.all();
             },
 
             init : function () {
@@ -316,6 +319,9 @@
                 browser.log("It's 5:00 pm. Time to go home");
                 browser.log("Use WASD or IJKL to move around");
                 browser.log("Bump into people to interact with them");
+
+                // sick of F5ing and seeing nothing until input, sort later
+                draw.all();
             },
 
         };
