@@ -63,7 +63,8 @@
                 return Math.floor(Math.random() * (max - min + 1)) + min;
             }
         },
-        npc = {
+
+        words = {
             names : ['Alex', 'Andy', 'Ash', 'Bobbi', 'Cass', 'Cassi', 'Charli',
                      'Chris', 'Danni', 'Eddy', 'Fran', 'Franki', 'Franni',
                      'Freddi', 'Gabbi', 'Georgie', 'Izzi', 'Jacki', 'Jay',
@@ -72,65 +73,89 @@
                      'Mel', 'Micki', 'Nat', 'Nicki', 'Oli', 'Pat', 'Patti',
                      'Robbi', 'Ronni', 'Sacha', 'Sal', 'Sam', 'Sammi', 'Sandi',
                      'Shelli', 'Terri', 'Theo', 'Val', 'Vic'],
-            moods : ['Infuriated', 'Angry', 'Frustrated', 'Annoyed', 'Uptight',
-                     'Anxious', 'Tense', 'Stressed', 'Withdrawn', 'Worried',
-                     'Disinterested', 'Indifferent', 'Mild', 'Calm', 'Relaxed',
-                     'Content', 'Glad', 'Flirty', 'Happy', 'Cheerful'],
+            moods : ['infuriated', 'angry', 'frustrated', 'annoyed', 'uptight',
+                     'anxious', 'tense', 'stressed', 'withdrawn', 'worried',
+                     'disinterested', 'indifferent', 'mild', 'calm', 'relaxed',
+                     'content', 'glad', 'flirty', 'happy', 'cheerful'],
+            win  : ['laughs', 'high fives you', 'hugs you',
+                    'giggles', 'smiles', 'fist bumps you',
+                    'winks at you', 'whispers in your ear',
+                    'waves at you'],
+            fail : ['cries', 'slaps you', 'groans', 'screams',
+                    'sobs', 'ignores you', 'looks the other way',
+                    'pushes you away', 'completely ignores you'],
+            begin : ['chat with', 'flirt with', 'gossip with',
+                     'tease', 'mock', 'nudge', 'taunt',
+                     'attempt to help', 'fart on', 'kiss'],
+            empty : ['No one important here',
+                     'Just you here, alone',
+                     'Nothing here']
+        },
+
+        npc = {
             chat : {
-                win_list  : ['laughs', 'high fives you', 'hugs you', 'giggles',
-                             'smiles', 'fist bumps you', 'winks at you',
-                             'whispers in your ear', 'waves at you'
-                            ],
-                fail_list : ['cries', 'slaps you', 'groans', 'screams', 'sobs',
-                             'ignores you', 'looks the other way',
-                             'pushes you away'
-                            ],
-                begin_list : ['chat with', 'flirt with', 'gossip with',
-                              'tease', 'mock', 'nudge', 'taunt',
-                              'attempt to help', 'fart on', 'kiss'
-                             ],
-                begin : function (name) {
-                    return 'You ' + npc.chat.begin_list[
-                        util.random_int(0, npc.chat.begin_list.length - 1)
-                    ] + ' ' + name;
+                begin : function (n) {
+                    return 'You ' + words.begin[
+                        util.random_int(0, words.begin.length - 1)
+                    ] + ' ' + n.name;
                 },
-                win : function (name) {
-                    return name + ' ' + npc.chat.win_list[
-                        util.random_int(0, npc.chat.win_list.length - 1)
+                win : function (n) {
+                    return n.name + ' ' + words.win[
+                        util.random_int(0, words.win.length - 1)
                     ];
                 },
-                fail : function (name) {
-                    return name + ' ' + npc.chat.fail_list[
-                        util.random_int(0, npc.chat.fail_list.length - 1)
+                fail : function (n) {
+                    return n.name + ' ' + words.fail[
+                        util.random_int(0, words.fail.length - 1)
                     ];
+                },
+                empty : function () {
+                    return words.empty[
+                        util.random_int(0, words.empty.length - 1)
+                    ];
+                },
+                friend : function (n) {
+                    return 'You and ' + n.name + ' are already friendly';
+                },
+                enemy : function (n) {
+                    return 'You and ' + n.name + ' are not on speaking terms';
+                },
+                sense : function (n) {
+                    return n.name + ' seems ' + words.moods[n.mood];
                 },
             },
             list : [],
-            interact : function (i) {
-                var n = npc.list[i],
-                    social_calc = 0,
+            interact : function (n) {
+                var social_calc = 0,
                     mood_calc = 0,
                     rand_calc = 0,
                     calc = 0,
                     skill_mod = 0,
                     social_mod = 0;
 
-                log.add(n.name +
-                            " seems " +
-                            npc.moods[n.mood].toLowerCase());
+                if (n.enemy === true) {
+                    log.add(npc.chat.enemy(n));
+                    return;
+                }
+
+                if (n.friend === true) {
+                    log.add(npc.chat.friend(n));
+                    return;
+                }
+
+                log.add(npc.chat.begin(n));
 
                 social_calc = player.social - n.social;
-                mood_calc = ((n.mood + 1) * (200 / npc.moods.length)) - 100;
+                mood_calc = ((n.mood + 1) * (200 / words.moods.length)) - 100;
                 rand_calc = util.random_int(-25, 25);
                 calc = mood_calc + n.dna + rand_calc;
-
-                log.add(npc.chat.begin(n.name));
-
                 social_mod = Math.abs(Math.floor(social_calc / 20));
                 skill_mod = Math.floor(social_mod / 2);
 
+
                 if (calc > 0) {
-                    log.add(npc.chat.win(n.name));
+                    n.friend = true;
+                    log.add(npc.chat.win(n));
 
                     if (player.skill + skill_mod > 100) {
                         player.skill = 100;
@@ -146,7 +171,8 @@
                 }
 
                 if (calc <= 0) {
-                    log.add(npc.chat.fail(n.name));
+                    n.enemy = true;
+                    log.add(npc.chat.fail(n));
 
                     if (player.social - social_mod < 0) {
                         player.social = 0;
@@ -263,7 +289,7 @@
                 for (i = 0; i < npc.list.length; i = i + 1) {
                     if (npc.list[i].x === x && npc.list[i].y === y) {
                         cell = map.legend['&'];
-                        cell.npc = i;
+                        cell.npc = npc.list[i];
                         break;
                     }
                 }
@@ -379,12 +405,14 @@
                     xy = map.random_loc('npc');
 
                     npc.list[i] = {
-                        'name'   : npc.names[
-                            util.random_int(0, npc.names.length - 1)
+                        'name'   : words.names[
+                            util.random_int(0, words.names.length - 1)
                         ],
-                        'mood'   : util.random_int(0, npc.moods.length - 1),
+                        'mood'   : util.random_int(0, words.moods.length - 1),
                         'social' : util.random_int(0, 100),
                         'dna'    : util.random_int(-50, 50),
+                        'friend' : false,
+                        'enemy'  : false,
                         'x'      : xy.x,
                         'y'      : xy.y
                     };
@@ -400,6 +428,10 @@
                     return;
                 }
 
+                if (cell.type === 'npc') {
+                    log.add(npc.chat.sense(cell.npc));
+                }
+
                 player.x = x;
                 player.y = y;
             },
@@ -408,7 +440,7 @@
                 var cell = map.at_cell(player.x, player.y);
 
                 if (cell.type === 'empty') {
-                    log.add("Nothing here");
+                    log.add(npc.chat.empty());
                 } else if (cell.type === 'npc') {
                     npc.interact(cell.npc);
                 }
@@ -429,7 +461,7 @@
             },
 
             update : function (e) {
-p                logic.handle_input(e);
+                logic.handle_input(e);
                 clear.fg();
                 draw.map_entities();
                 draw.ui_content();
