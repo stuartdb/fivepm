@@ -40,20 +40,6 @@ canvas:focus {
     margin: 0px;
 }
 
-.instructions {
-    position: relative;
-    top: 400px;
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-.instructions p {
-    font-size: 12px;
-    padding: 0px;
-    margin: 0px;
-}
-
-
 #fivepmbg {
     z-index: 0;
 }

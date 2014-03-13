@@ -41,10 +41,10 @@
                     i = 0;
                 p.innerHTML = '';
 
-                if (log.data.length < 5) {
+                if (log.data.length < 10) {
                     i = 0;
                 } else {
-                    i = log.data.length - 5;
+                    i = log.data.length - 10;
                 }
 
                 for (i; i < log.data.length; i = i + 1) {
@@ -429,7 +429,7 @@
             },
 
             update : function (e) {
-                logic.handle_input(e);
+p                logic.handle_input(e);
                 clear.fg();
                 draw.map_entities();
                 draw.ui_content();
@@ -456,9 +456,6 @@
                 log.write();
                 draw.all();
             },
-
         };
-
     logic.init();
-
 }());
