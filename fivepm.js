@@ -25,14 +25,31 @@
             'skill'  : 0,
             'social' : 0,
         },
-        browser = {
+        log = {
+            data  : [],
+            reset : function () {
+                log.data = [];
+            },
+            add   : function (text) {
+                log.data[log.data.length] = text;
+            },
             debug : function (obj) {
                 console.log(obj);
             },
+            write : function () {
+                var p = document.getElementById('log'),
+                    i = 0;
+                p.innerHTML = '';
 
-            log : function (text) {
-                var p = document.getElementById('log');
-                p.innerHTML = text + '<br>' + p.innerHTML;
+                if (log.data.length < 5) {
+                    i = 0;
+                } else {
+                    i = log.data.length - 5;
+                }
+
+                for (i; i < log.data.length; i = i + 1) {
+                    p.innerHTML = log.data[i] + '<br>' + p.innerHTML;
+                }
             }
         },
         util = {
@@ -69,7 +86,7 @@
                     skill_mod = 0,
                     social_mod = 0;
 
-                browser.log(n.name +
+                log.add(n.name +
                             " seems " +
                             npc.moods[n.mood].toLowerCase());
 
@@ -78,22 +95,22 @@
                 rand_calc = util.random_int(-25, 25);
                 calc = mood_calc + n.dna + rand_calc;
 
-                browser.log('Their social status: ' + n.social);
-                browser.log('Your social status: ' + player.social);
-//                browser.log('Social calc: ' + social_calc);
-                browser.log('Mood calc: ' + mood_calc);
-                browser.log('DNA: ' + n.dna);
-                browser.log('Rand: ' + rand_calc);
-                browser.log('Calc: ' + calc);
-                browser.log('You attempt to chat...');
+                log.add('Their social status: ' + n.social);
+                log.add('Your social status: ' + player.social);
+//                log.add('Social calc: ' + social_calc);
+                log.add('Mood calc: ' + mood_calc);
+                log.add('DNA: ' + n.dna);
+                log.add('Rand: ' + rand_calc);
+                log.add('Calc: ' + calc);
+                log.add('You attempt to chat...');
 
                 social_mod = Math.abs(Math.floor(social_calc / 20));
                 skill_mod = Math.floor(social_mod / 2);
 
                 if (calc > 0) {
-                    browser.log('Success!');
-                    browser.log('Skill increased by ' + skill_mod);
-                    browser.log('Social Status increased by ' + social_mod);
+                    log.add('Success!');
+                    log.add('Skill increased by ' + skill_mod);
+                    log.add('Social Status increased by ' + social_mod);
 
                     if (player.skill + skill_mod > 100) {
                         player.skill = 100;
@@ -109,8 +126,8 @@
                 }
 
                 if (calc <= 0) {
-                    browser.log('Failed!');
-                    browser.log('Social Status decreased by ' + social_mod);
+                    log.add('Failed!');
+                    log.add('Social Status decreased by ' + social_mod);
 
                     if (player.social - social_mod < 0) {
                         player.social = 0;
@@ -119,8 +136,8 @@
                     }
                 }
 
-                browser.log(player.social);
-                browser.log(player.skill);
+                log.add(player.social);
+                log.add(player.skill);
             }
         },
         map = {
@@ -375,7 +392,7 @@
                 var cell = map.at_cell(player.x, player.y);
 
                 if (cell.type === 'empty') {
-                    browser.log("Nothing here");
+                    log.add("Nothing here");
                 } else if (cell.type === 'npc') {
                     npc.interact(cell.npc);
                 }
@@ -400,6 +417,7 @@
                 clear.fg();
                 draw.map_entities();
                 draw.ui_content();
+                log.write();
             },
 
             init : function () {
@@ -415,10 +433,11 @@
                 fg_canvas.focus();
                 fg_canvas.addEventListener('keydown', logic.update, false);
 
-                browser.log("It's 5:00 pm. Time to go home");
-                browser.log("Use WASD or IJKL to move around");
-                browser.log("Use E or U to interact");
+                log.add("It's 5:00 pm. Time to go home");
+                log.add("Use WASD or IJKL to move around");
+                log.add("Use E or U to interact");
 
+                log.write();
                 draw.all();
             },
 
