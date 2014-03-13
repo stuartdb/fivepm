@@ -76,6 +76,35 @@
                      'Anxious', 'Tense', 'Stressed', 'Withdrawn', 'Worried',
                      'Disinterested', 'Indifferent', 'Mild', 'Calm', 'Relaxed',
                      'Content', 'Glad', 'Flirty', 'Happy', 'Cheerful'],
+            chat : {
+                win_list  : ['laughs', 'high fives you', 'hugs you', 'giggles',
+                             'smiles', 'fist bumps you', 'winks at you',
+                             'whispers in your ear', 'waves at you'
+                            ],
+                fail_list : ['cries', 'slaps you', 'groans', 'screams', 'sobs',
+                             'ignores you', 'looks the other way',
+                             'pushes you away'
+                            ],
+                begin_list : ['chat with', 'flirt with', 'gossip with',
+                              'tease', 'mock', 'nudge', 'taunt',
+                              'attempt to help', 'fart on', 'kiss'
+                             ],
+                begin : function (name) {
+                    return 'You ' + npc.chat.begin_list[
+                        util.random_int(0, npc.chat.begin_list.length - 1)
+                    ] + ' ' + name;
+                },
+                win : function (name) {
+                    return name + ' ' + npc.chat.win_list[
+                        util.random_int(0, npc.chat.win_list.length - 1)
+                    ];
+                },
+                fail : function (name) {
+                    return name + ' ' + npc.chat.fail_list[
+                        util.random_int(0, npc.chat.fail_list.length - 1)
+                    ];
+                },
+            },
             list : [],
             interact : function (i) {
                 var n = npc.list[i],
@@ -95,22 +124,13 @@
                 rand_calc = util.random_int(-25, 25);
                 calc = mood_calc + n.dna + rand_calc;
 
-                log.add('Their social status: ' + n.social);
-                log.add('Your social status: ' + player.social);
-//                log.add('Social calc: ' + social_calc);
-                log.add('Mood calc: ' + mood_calc);
-                log.add('DNA: ' + n.dna);
-                log.add('Rand: ' + rand_calc);
-                log.add('Calc: ' + calc);
-                log.add('You attempt to chat...');
+                log.add(npc.chat.begin(n.name));
 
                 social_mod = Math.abs(Math.floor(social_calc / 20));
                 skill_mod = Math.floor(social_mod / 2);
 
                 if (calc > 0) {
-                    log.add('Success!');
-                    log.add('Skill increased by ' + skill_mod);
-                    log.add('Social Status increased by ' + social_mod);
+                    log.add(npc.chat.win(n.name));
 
                     if (player.skill + skill_mod > 100) {
                         player.skill = 100;
@@ -126,8 +146,7 @@
                 }
 
                 if (calc <= 0) {
-                    log.add('Failed!');
-                    log.add('Social Status decreased by ' + social_mod);
+                    log.add(npc.chat.fail(n.name));
 
                     if (player.social - social_mod < 0) {
                         player.social = 0;
@@ -135,9 +154,6 @@
                         player.social = player.social - social_mod;
                     }
                 }
-
-                log.add(player.social);
-                log.add(player.skill);
             }
         },
         map = {
