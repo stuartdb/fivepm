@@ -3,43 +3,30 @@
   <head>
     <meta charset="utf-8" />
     <title>fivepm</title>
-    <style type="text/css">
-      body{
-      font-family: sans-serif;
-      }
-      #main{
-      max-width: 600px;
-      margin: 0 auto;
-      }
-      #game{
-      max-width: 400px;
-      margin: 0 auto;
-      }
-      canvas{
-      margin: 0 auto;
-      }
-      canvas:focus{
-      outline: 0;
-      }
-      h1{
-      text-align: center;
-      }
-      #log{
-      font-size: 12px;
-      padding: 9.5px;
-      margin: 0px;
-      }
+    <link rel="stylesheet" href="minimal.css">
     </style>
   </head>
   <body>
-    <div id="main">
-      <h1>fivepm</h1>
-      <div id="game">
-      <canvas id="fivepm" width="400" height="340" tabindex="1"></canvas>
-      <div id="logs">
-      <p id="log">Loading fivepm...</p>
+    <div class="container">
+
+      <div class="header">
+        <h1>fivepm</h1>
       </div>
+
+      <div class="game">
+        <canvas id="fivepmbg" width="400" height="340"></canvas>
+        <canvas id="fivepmfg" width="400" height="340" tabindex="1"></canvas>
+
+        <div class="log">
+          <p>Loading fivepm...</p>
+        </div>
       </div>
+
+      <div class="instructions">
+        <h1>Instructions</h1>
+        <p>This is how the game works....</p>
+      </div>
+
     </div>
   </body>
   <script src="fivepm.js" type="text/javascript"></script>
