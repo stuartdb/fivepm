@@ -30,22 +30,25 @@ canvas:focus {
 
 .log {
     position: relative;
-    top: 350px
+    top: 340px;
+    padding: 9.5px;
+    margin: 0px;
 }
 
 .log p {
     font-size: 12px;
-    padding: 9.5px;
     margin: 0px;
 }
 
 .instructions {
     position: relative;
-    top: 600px;
+    top: 400px;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
 .instructions p {
-    font-size: 14px;
+    font-size: 12px;
     padding: 0px;
     margin: 0px;
 }
