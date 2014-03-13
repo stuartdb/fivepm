@@ -1,7 +1,9 @@
 (function () {
     'use strict';
-    var canvas,
-        context,
+    var bg_canvas,
+        fg_canvas,
+        bg_context,
+        fg_context,
         colors = {
             'grid' : 'rgb(220,220,220)',
             'font' : 'rgb(0,0,0)',
@@ -236,40 +238,56 @@
                 return cell;
             }
         },
+        clear = {
+            all : function () {
+                clear.fg();
+                clear.bg();
+            },
+            canvas : function (context) {
+                context.clearRect(0,
+                                  0,
+                                  context.canvas.width,
+                                  context.canvas.height);
+            },
+            bg : function () {
+                clear.canvas(bg_context);
+            },
+            fg : function () {
+                clear.canvas(fg_context);
+            }
+        },
         draw = {
             all : function () {
                 draw.grid();
                 draw.ui();
+                draw.ui_content();
                 draw.map();
                 draw.map_entities();
-            },
-            clear : function () {
-                context.clearRect(0, 0, canvas.width, canvas.height);
             },
             grid : function () {
                 var x = grid.x,
                     y = grid.y;
 
-                context.beginPath();
+                bg_context.beginPath();
                 for (x; x < grid.width; x = x + grid.cell) {
-                    context.moveTo(x, grid.y);
-                    context.lineTo(x, grid.height);
+                    bg_context.moveTo(x, grid.y);
+                    bg_context.lineTo(x, grid.height);
 
                 }
 
                 for (y; y < grid.height; y = y + grid.cell) {
-                    context.moveTo(grid.x, y);
-                    context.lineTo(grid.width, y);
+                    bg_context.moveTo(grid.x, y);
+                    bg_context.lineTo(grid.width, y);
                 }
-                context.strokeStyle = colors.grid;
-                context.stroke();
+                bg_context.strokeStyle = colors.grid;
+                bg_context.stroke();
             },
 
             map : function () {
                 var i, j;
                 for (i = 0; i < map.data.length; i = i + 1) {
                     for (j = 0; j < map.data[i].length; j = j + 1) {
-                        draw.at_cell(j, i, map.data[i][j]);
+                        draw.at_cell(bg_context, j, i, map.data[i][j]);
                     }
                 }
             },
@@ -277,14 +295,17 @@
             map_entities : function () {
                 var i = 0;
 
-                draw.at_cell(player.x, player.y, '@');
-
                 for (i = 0; i < npc.list.length; i = i + 1) {
-                    draw.at_cell(npc.list[i].x, npc.list[i].y, '&');
+                    draw.at_cell(fg_context,
+                                 npc.list[i].x,
+                                 npc.list[i].y,
+                                 '&');
                 }
+
+                draw.at_cell(fg_context, player.x, player.y, '@');
             },
 
-            at_cell : function (x, y, cell) {
+            at_cell : function (context, x, y, cell) {
                 context.fillStyle = map.legend[cell].color;
                 context.fillRect(grid.x + (x * grid.cell),
                                  grid.y + (y * grid.cell),
@@ -294,15 +315,17 @@
             },
 
             ui : function () {
-                context.strokeRect(9.5, 300, 380, 10);
-                context.strokeRect(9.5, 320, 380, 10);
-                context.strokeStyle = colors.ui;
-                context.stroke();
-
-                context.fillStyle = colors.ui;
-                context.fillRect(9.5, 320, player.social * 3.8, 10);
-                context.fillRect(9.5, 300, player.skill * 3.8, 10);
+                bg_context.strokeRect(9.5, 300, 380, 10);
+                bg_context.strokeRect(9.5, 320, 380, 10);
+                bg_context.strokeStyle = colors.ui;
+                bg_context.stroke();
             },
+
+            ui_content : function () {
+                fg_context.fillStyle = colors.ui;
+                fg_context.fillRect(9.5, 320, player.social * 3.8, 10);
+                fg_context.fillRect(9.5, 300, player.skill * 3.8, 10);
+            }
         },
 
 
@@ -374,25 +397,28 @@
 
             update : function (e) {
                 logic.handle_input(e);
-                draw.clear();
-                draw.all();
+                clear.fg();
+                draw.map_entities();
+                draw.ui_content();
             },
 
             init : function () {
                 map.data = map.layout;
                 logic.generate_npcs();
 
-                canvas = document.getElementById('fivepm');
-                context = canvas.getContext('2d');
-                canvas.focus();
+                bg_canvas = document.getElementById('fivepmbg');
+                bg_context = bg_canvas.getContext('2d');
 
-                canvas.addEventListener('keydown', logic.update, false);
+                fg_canvas = document.getElementById('fivepmfg');
+                fg_context = fg_canvas.getContext('2d');
+
+                fg_canvas.focus();
+                fg_canvas.addEventListener('keydown', logic.update, false);
 
                 browser.log("It's 5:00 pm. Time to go home");
                 browser.log("Use WASD or IJKL to move around");
                 browser.log("Use E or U to interact");
 
-                // sick of F5ing and seeing nothing until input, sort later
                 draw.all();
             },
 
