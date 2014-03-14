@@ -40,6 +40,14 @@ canvas:focus {
     margin: 0px;
 }
 
+#log {
+    font-weight: bold;
+}
+
+#oldlog {
+    font-weight: normal;
+}
+
 #fivepmbg {
     z-index: 0;
 }
