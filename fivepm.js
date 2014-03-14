@@ -25,6 +25,13 @@
             'steps'  : 0,
             'skill'  : 0,
             'social' : 0,
+            reset    : function () {
+                player.x = 36;
+                player.y = 26;
+                player.steps = 0;
+                player.skill = 0;
+                player.social = 0;
+            }
         },
         log = {
             data  : [],
@@ -411,6 +418,7 @@
                         y : 0
                     };
 
+                npc.list = [];
                 npcs = util.random_int(10, 20);
 
                 for (i = 0; i < npcs; i = i + 1) {
@@ -453,18 +461,21 @@
                 player.y = y;
             },
 
+            end : function () {
+                log.add('Congrats, you managed to leave the office');
+                log.add('Your social skills are at ' + player.skill + '%');
+                log.add('Your social status is at ' + player.social + '%');
+                log.add('You took ' + player.steps + ' steps getting out');
+                log.add('You made ' + npc.count("friend") + ' friends');
+                log.add('You made ' + npc.count("enemy") + ' enemies');
+                log.add('Press any key to start again');
+                state = 'END';
+            },
             interact : function () {
                 var cell = map.at_cell(player.x, player.y);
 
                 if (cell.type === 'exit') {
-                    log.add('Congrats, you managed to leave the office');
-                    log.add('Your social skills are at ' + player.skill + '%');
-                    log.add('Your social status is at ' + player.social + '%');
-                    log.add('You took ' + player.steps + ' steps getting out');
-                    log.add('You made ' + npc.count("friend") + ' friends');
-                    log.add('You made ' + npc.count("enemy") + ' enemies');
-                    state = 'END';
-
+                    logic.end();
                 } else if (cell.type === 'npc') {
                     npc.interact(cell.npc);
                 } else {
@@ -507,6 +518,8 @@
 
             init : function () {
                 state = 'START';
+
+                player.reset();
 
                 map.data = map.layout;
                 logic.generate_npcs();
