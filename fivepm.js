@@ -230,12 +230,17 @@
             legend : {
                 '@' : { type : 'player', color : 'rgb(0,0,0)' },
                 '&' : { type : 'npc',    color : 'rgb(140,170,255)' },
-                '+' : { type : 'npc',    color : 'rgb(255,170,140)' },
-                '-' : { type : 'npc',    color : 'rgb(140,255,170)' },
+                '-' : { type : 'npc',    color : 'rgb(255,170,170)' },
+                '+' : { type : 'npc',    color : 'rgb(140,255,170)' },
                 '*' : { type : 'solid',  color : 'rgb(220,220,220)' },
                 '?' : { type : 'solid',  color : 'rgb(190,190,190)' },
-                '^' : { type : 'exit',   color : 'rgb(150,250,150)' },
                 '=' : { type : 'solid',  color : 'rgb(240,240,240)' },
+                '~' : { type : 'solid',  color : 'rgb(140,220,255)' },
+                '^' : { type : 'exit',   color : 'rgb(255,220,140)' },
+                '<' : { type : 'down',   color : 'rgb(160,140,255)' },
+                '>' : { type : 'up',     color : 'rgb(255,140,255)' },
+                '!' : { type : 'lift',   color : 'rgb(220,140,255)' },
+                's' : { type : 'spawn',  color : 'rgb(255,255,255)' },
                 '.' : { type : 'empty',  color : 'rgb(255,255,255)' }
             },
             data : [],
@@ -439,9 +444,9 @@
                     n = npc.list[i];
 
                     if (n.enemy === true) {
-                        draw.cell(ctx, n.x, n.y, '+');
-                    } else if (n.friend === true) {
                         draw.cell(ctx, n.x, n.y, '-');
+                    } else if (n.friend === true) {
+                        draw.cell(ctx, n.x, n.y, '+');
                     } else {
                         draw.cell(ctx, n.x, n.y, '&');
                     }
@@ -517,7 +522,19 @@
                 }
 
                 if (cell.type === 'exit') {
-                    log.add('These are the stairs down, no elevator in sight');
+                    log.add('This is the exit. There is no turning back now');
+                }
+
+                if (cell.type === 'up') {
+                    log.add('These are the stairs up');
+                }
+
+                if (cell.type === 'down') {
+                    log.add('These are the stairs down');
+                }
+
+                if (cell.type === 'lift') {
+                    log.add('An elevator. Probably should have used that');
                 }
 
                 if (cell.type === 'npc') {
