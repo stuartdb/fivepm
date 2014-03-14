@@ -34,8 +34,10 @@
             }
         },
         log = {
+            line  : 0,
             data  : [],
             reset : function () {
+                log.line = 0;
                 log.data = [];
             },
             add   : function (text) {
@@ -44,21 +46,39 @@
             debug : function (obj) {
                 console.log(obj);
             },
-            write : function () {
-                var p = document.getElementById('log'),
-                    i = 0;
-                p.innerHTML = '';
-
-                if (log.data.length < 10) {
-                    i = 0;
-                } else {
-                    i = log.data.length - 10;
-                }
-
-                for (i; i < log.data.length; i = i + 1) {
+            wrote : function () {
+                log.line = log.data.length;
+            },
+            write_lines : function (p, line_from, line_to) {
+                var i = line_from;
+                for (i; i < line_to; i = i + 1) {
                     p.innerHTML = log.data[i] + '<br>' + p.innerHTML;
                 }
-            }
+            },
+            write : function () {
+                var p = document.getElementById('log'),
+                    oldp = document.getElementById('oldlog'),
+                    limit_line = log.line - 10,
+                    new_line = log.line;
+
+                if (log.data.length <= 0) {
+                    return;
+                }
+
+                p.innerHTML = '';
+                oldp.innerHTML = '';
+
+                if (limit_line < 0 || limit_line > log.data.length) {
+                    limit_line = 0;
+                } else {
+                    limit_line = new_line - 10;
+                }
+
+                log.write_lines(oldp, limit_line, new_line);
+                log.write_lines(p, new_line, log.data.length);
+
+                log.wrote();
+            },
         },
         util = {
             random : function () {
@@ -519,6 +539,7 @@
             init : function () {
                 state = 'START';
 
+                log.reset();
                 player.reset();
 
                 map.data = map.layout;
