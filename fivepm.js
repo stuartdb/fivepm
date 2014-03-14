@@ -6,9 +6,11 @@
         fg_context,
         state  = 'START',
         colors = {
-            'grid' : 'rgb(220,220,220)',
-            'font' : 'rgb(0,0,0)',
-            'ui'   : 'rgb(220,220,220)'
+            'grid'      : 'rgb(220,220,220)',
+            'font'      : 'rgb(0,0,0)',
+            'ui'        : 'rgb(220,220,220)',
+            'ui_skill'  : 'rgb(0,0,0)',
+            'ui_social' : 'rgb(140,170,255)'
         },
         grid = {
             'x'      : 9.5,
@@ -227,7 +229,7 @@
             height : grid.cellh,
             legend : {
                 '@' : { type : 'player', color : 'rgb(0,0,0)' },
-                '&' : { type : 'npc',    color : 'rgb(50,100,200)' },
+                '&' : { type : 'npc',    color : 'rgb(140,170,255)' },
                 '*' : { type : 'solid',  color : 'rgb(220,220,220)' },
                 '?' : { type : 'solid',  color : 'rgb(190,190,190)' },
                 '+' : { type : 'exit',   color : 'rgb(150,250,150)' },
@@ -367,6 +369,8 @@
                 var x = grid.x,
                     y = grid.y;
 
+                bg_context.strokeStyle = colors.grid;
+
                 bg_context.beginPath();
                 for (x; x < grid.width; x = x + grid.cell) {
                     bg_context.moveTo(x, grid.y);
@@ -378,7 +382,6 @@
                     bg_context.moveTo(grid.x, y);
                     bg_context.lineTo(grid.width, y);
                 }
-                bg_context.strokeStyle = colors.grid;
                 bg_context.stroke();
             },
 
@@ -414,16 +417,22 @@
             },
 
             ui : function () {
-                bg_context.strokeRect(9.5, 300, 380, 10);
-                bg_context.strokeRect(9.5, 320, 380, 10);
+                bg_context.beginPath();
                 bg_context.strokeStyle = colors.ui;
+                bg_context.strokeRect(9.5, 300.5, 380, 10);
+                bg_context.stroke();
+
+                bg_context.beginPath();
+                bg_context.strokeStyle = colors.ui;
+                bg_context.strokeRect(9.5, 320.5, 380, 10);
                 bg_context.stroke();
             },
 
             ui_content : function () {
-                fg_context.fillStyle = colors.ui;
-                fg_context.fillRect(9.5, 320, player.social * 3.8, 10);
-                fg_context.fillRect(9.5, 300, player.skill * 3.8, 10);
+                fg_context.fillStyle = colors.ui_skill;
+                fg_context.fillRect(9.5, 300.5, player.skill * 3.8, 10);
+                fg_context.fillStyle = colors.ui_social;
+                fg_context.fillRect(9.5, 320.5, player.social * 3.8, 10);
             },
         },
 
