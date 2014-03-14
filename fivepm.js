@@ -230,16 +230,18 @@
             legend : {
                 '@' : { type : 'player', color : 'rgb(0,0,0)' },
                 '&' : { type : 'npc',    color : 'rgb(140,170,255)' },
+                '+' : { type : 'npc',    color : 'rgb(255,170,140)' },
+                '-' : { type : 'npc',    color : 'rgb(140,255,170)' },
                 '*' : { type : 'solid',  color : 'rgb(220,220,220)' },
                 '?' : { type : 'solid',  color : 'rgb(190,190,190)' },
-                '+' : { type : 'exit',   color : 'rgb(150,250,150)' },
+                '^' : { type : 'exit',   color : 'rgb(150,250,150)' },
                 '=' : { type : 'solid',  color : 'rgb(240,240,240)' },
                 '.' : { type : 'empty',  color : 'rgb(255,255,255)' }
             },
             data : [],
             layout : ['**************************************',
                       '*??..*...........??=.................*',
-                      '*....*............?=................+*',
+                      '*....*............?=................^*',
                       '*..***............?=.................*',
                       '*.........******************....******',
                       '*..***.......?*..??.*?.?........*?..?*',
@@ -395,16 +397,23 @@
             },
 
             map_entities : function () {
-                var i = 0;
+                var n,
+                    i = 0,
+                    ctx = fg_context;
 
                 for (i = 0; i < npc.list.length; i = i + 1) {
-                    draw.cell(fg_context,
-                                 npc.list[i].x,
-                                 npc.list[i].y,
-                                 '&');
+                    n = npc.list[i];
+
+                    if (n.enemy === true) {
+                        draw.cell(ctx, n.x, n.y, '+');
+                    } else if (n.friend === true) {
+                        draw.cell(ctx, n.x, n.y, '-');
+                    } else {
+                        draw.cell(ctx, n.x, n.y, '&');
+                    }
                 }
 
-                draw.cell(fg_context, player.x, player.y, '@');
+                draw.cell(ctx, player.x, player.y, '@');
             },
 
             cell : function (context, x, y, cell) {
