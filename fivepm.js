@@ -4,6 +4,7 @@
         fg_canvas,
         bg_context,
         fg_context,
+        state  = 'START',
         colors = {
             'grid' : 'rgb(220,220,220)',
             'font' : 'rgb(0,0,0)',
@@ -125,6 +126,18 @@
                 },
             },
             list : [],
+            count : function (property) {
+                var i  = 0,
+                    count = 0;
+
+                for (i = 0; i < npc.list.length; i = i + 1) {
+                    if (npc.list[i][property] === true) {
+                        count = count + 1;
+                    }
+                }
+
+                return count;
+            },
             interact : function (n) {
                 var social_calc = 0,
                     mood_calc = 0,
@@ -190,14 +203,14 @@
                 '&' : { type : 'npc',    color : 'rgb(50,100,200)' },
                 '*' : { type : 'solid',  color : 'rgb(220,220,220)' },
                 '?' : { type : 'solid',  color : 'rgb(190,190,190)' },
-                '>' : { type : 'solid',  color : 'rgb(150,250,150)' },
+                '+' : { type : 'exit',   color : 'rgb(150,250,150)' },
                 '=' : { type : 'solid',  color : 'rgb(240,240,240)' },
                 '.' : { type : 'empty',  color : 'rgb(255,255,255)' }
             },
             data : [],
             layout : ['**************************************',
                       '*??..*...........??=.................*',
-                      '*....*............?=.................>',
+                      '*....*............?=................+*',
                       '*..***............?=.................*',
                       '*.........******************....******',
                       '*..***.......?*..??.*?.?........*?..?*',
@@ -384,7 +397,7 @@
                 fg_context.fillStyle = colors.ui;
                 fg_context.fillRect(9.5, 320, player.social * 3.8, 10);
                 fg_context.fillRect(9.5, 300, player.skill * 3.8, 10);
-            }
+            },
         },
 
 
@@ -428,10 +441,14 @@
                     return;
                 }
 
+                if (cell.type === 'exit') {
+                    log.add('These are the stairs down, no elevator in sight');
+                }
+
                 if (cell.type === 'npc') {
                     log.add(npc.chat.sense(cell.npc));
                 }
-
+                player.steps = player.steps + 1;
                 player.x = x;
                 player.y = y;
             },
@@ -439,10 +456,19 @@
             interact : function () {
                 var cell = map.at_cell(player.x, player.y);
 
-                if (cell.type === 'empty') {
-                    log.add(npc.chat.empty());
+                if (cell.type === 'exit') {
+                    log.add('Congrats, you managed to leave the office');
+                    log.add('Your social skills are at ' + player.skill + '%');
+                    log.add('Your social status is at ' + player.social + '%');
+                    log.add('You took ' + player.steps + ' steps getting out');
+                    log.add('You made ' + npc.count("friend") + ' friends');
+                    log.add('You made ' + npc.count("enemy") + ' enemies');
+                    state = 'END';
+
                 } else if (cell.type === 'npc') {
                     npc.interact(cell.npc);
+                } else {
+                    log.add(npc.chat.empty());
                 }
             },
 
@@ -461,14 +487,27 @@
             },
 
             update : function (e) {
-                logic.handle_input(e);
-                clear.fg();
-                draw.map_entities();
-                draw.ui_content();
+                if (state === 'PLAY') {
+                    logic.handle_input(e);
+                    clear.fg();
+                    draw.map_entities();
+                    draw.ui_content();
+                } else if (state === 'START') {
+                    log.add("It's 5:00 pm. Time to go home");
+                    state = 'PLAY';
+                } else if (state === 'END') {
+                    logic.init();
+                } else {
+                    log.add("Something went wrong");
+                    log.add("Please reload the web page");
+                }
+
                 log.write();
             },
 
             init : function () {
+                state = 'START';
+
                 map.data = map.layout;
                 logic.generate_npcs();
 
@@ -481,12 +520,18 @@
                 fg_canvas.focus();
                 fg_canvas.addEventListener('keydown', logic.update, false);
 
-                log.add("It's 5:00 pm. Time to go home");
+                log.add("Welcome to fivepm");
+                log.add("A 2014 7drl");
                 log.add("Use WASD or IJKL to move around");
+                log.add("You can sense co-worker moods by walking into them");
                 log.add("Use E or U to interact");
+                log.add("Read the help below for more detailed instructions");
+                log.add("Press any key to start");
 
-                log.write();
+                clear.all();
                 draw.all();
+                log.write();
+
             },
         };
     logic.init();
