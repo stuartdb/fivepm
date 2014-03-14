@@ -91,7 +91,20 @@
             },
             random_int : function (min, max) {
                 return Math.floor(Math.random() * (max - min + 1)) + min;
-            }
+            },
+            random_array : function (source, num) {
+                var result = [],
+                    r = 0,
+                    i = 0;
+
+                for (i = 0; i < num; i = i + 1) {
+                    r = util.random_int(0, source.length - 1);
+                    result[result.length] = source[r];
+                    source.splice(r, 1);
+                }
+
+                return result;
+            },
         },
 
         words = {
@@ -299,36 +312,6 @@
                 }
                 return empties;
             },
-            rand_empties : function (no) {
-                var empties = map.empties(),
-                    picks = [],
-                    r = 0,
-                    i = 0;
-
-                for (i = 0; i < no; i = i + 1) {
-                    r = util.random_int(0, empties.length - 1);
-                    picks[picks.length] = empties[r];
-                    empties.splice(r, 1);
-                }
-
-                return picks;
-            },
-
-            random_loc : function (entity) {
-                var xy = {
-                    x : 0,
-                    y : 0,
-                };
-
-                xy.x = util.random_int(1, grid.cellw - 1);
-                xy.y = util.random_int(1, grid.cellh - 1);
-
-                if (map.valid_cell(entity, xy.x, xy.y) !== true) {
-                    xy = map.random_loc(entity);
-                }
-
-                return xy;
-            },
 
             at_cell : function (x, y) {
                 var cell,
@@ -461,11 +444,11 @@
             generate_npcs : function () {
                 var i = 0,
                     npcs = 0,
-                    locs = [];
+                    locations = [];
 
                 npc.list = [];
                 npcs = util.random_int(10, 20);
-                locs = map.rand_empties(npcs);
+                locations = util.random_array(map.empties(), npcs);
 
                 for (i = 0; i < npcs; i = i + 1) {
                     npc.list[i] = {
@@ -477,8 +460,8 @@
                         'dna'    : util.random_int(-50, 50),
                         'friend' : false,
                         'enemy'  : false,
-                        'x'      : locs[i].x,
-                        'y'      : locs[i].y
+                        'x'      : locations[i].x,
+                        'y'      : locations[i].y
                     };
                 }
             },
