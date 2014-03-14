@@ -227,7 +227,7 @@
         map = {
             width  : grid.cellw,
             height : grid.cellh,
-            data : [],
+            current : {},
             legend : {
                 '@' : { type : 'player', color : 'rgb(0,0,0)' },
                 '&' : { type : 'npc',    color : 'rgb(140,170,255)' },
@@ -279,42 +279,6 @@
                                '**************************************'],
                 },
             ],
-
-            cell_in_bounds : function (x, y) {
-                var valid = false;
-
-                if (x >= 0 && x <= map.width) {
-                    if (y >= 0 && y <= map.height) {
-                        valid = true;
-                    }
-                }
-
-                return valid;
-            },
-
-            valid_cell : function (entity, x, y) {
-                var valid = false,
-                    cell;
-
-                if (map.cell_in_bounds(x, y) !== true) {
-                    return false;
-                }
-
-                cell = map.legend[map.data[y][x]];
-
-                if (cell.type !== 'empty') {
-                    return false;
-                }
-
-                // entity specific checks
-                if (entity === 'player') {
-                    valid =  true;
-                } else if (entity === 'npc') {
-                    valid = true;
-                }
-
-                return valid;
-            },
 
             empties : function () {
                 var i = 0,
