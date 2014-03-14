@@ -304,6 +304,40 @@
                 return valid;
             },
 
+            empties : function () {
+                var i = 0,
+                    j = 0,
+                    cell,
+                    empties = [];
+
+                for (i = 0; i < map.data.length; i = i + 1) {
+                    for (j = 0; j < map.data[i].length; j = j + 1) {
+                        cell = map.at_cell(j, i);
+                        if (cell.type === 'empty') {
+                            empties[empties.length] = {
+                                x : j,
+                                y : i
+                            };
+                        }
+                    }
+                }
+                return empties;
+            },
+            rand_empties : function (no) {
+                var empties = map.empties(),
+                    picks = [],
+                    r = 0,
+                    i = 0;
+
+                for (i = 0; i < no; i = i + 1) {
+                    r = util.random_int(0, empties.length - 1);
+                    picks[picks.length] = empties[r];
+                    empties.splice(r, 1);
+                }
+
+                return picks;
+            },
+
             random_loc : function (entity) {
                 var xy = {
                     x : 0,
@@ -451,18 +485,13 @@
             generate_npcs : function () {
                 var i = 0,
                     npcs = 0,
-                    xy = {
-                        x : 0,
-                        y : 0
-                    };
+                    locs = [];
 
                 npc.list = [];
                 npcs = util.random_int(10, 20);
+                locs = map.rand_empties(npcs);
 
                 for (i = 0; i < npcs; i = i + 1) {
-
-                    xy = map.random_loc('npc');
-
                     npc.list[i] = {
                         'name'   : words.names[
                             util.random_int(0, words.names.length - 1)
@@ -472,8 +501,8 @@
                         'dna'    : util.random_int(-50, 50),
                         'friend' : false,
                         'enemy'  : false,
-                        'x'      : xy.x,
-                        'y'      : xy.y
+                        'x'      : locs[i].x,
+                        'y'      : locs[i].y
                     };
                 }
             },
