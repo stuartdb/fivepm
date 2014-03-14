@@ -34,7 +34,89 @@
         player,
         state  = 'START',
         util,
-        words;
+        words = {
+            names : ['Alex', 'Andy', 'Ash', 'Bobbi', 'Cass', 'Cassi', 'Charli',
+                     'Chris', 'Danni', 'Eddy', 'Fran', 'Franki', 'Franni',
+                     'Freddi', 'Gabbi', 'Georgie', 'Izzi', 'Jacki', 'Jay',
+                     'Jess', 'Jerri', 'Joey', 'Joss', 'Kel', 'Kris', 'Liv',
+                     'Lou', 'Louie', 'Maddi', 'Mandi', 'Manni', 'Matti', 'Max',
+                     'Mel', 'Micki', 'Nat', 'Nicki', 'Oli', 'Pat', 'Patti',
+                     'Robbi', 'Ronni', 'Sacha', 'Sal', 'Sam', 'Sammi', 'Sandi',
+                     'Shelli', 'Terri', 'Theo', 'Val', 'Vic'],
+            moods : ['infuriated', 'angry', 'frustrated', 'annoyed', 'uptight',
+                     'anxious', 'tense', 'stressed', 'withdrawn', 'worried',
+                     'disinterested', 'indifferent', 'mild', 'calm', 'relaxed',
+                     'content', 'glad', 'flirty', 'happy', 'cheerful'],
+            win   : ['laughs', 'high fives you', 'hugs you',
+                    'giggles', 'smiles', 'fist bumps you',
+                    'winks at you', 'whispers in your ear',
+                    'waves at you'],
+            fail  : ['cries', 'slaps you', 'groans', 'screams',
+                    'sobs', 'ignores you', 'looks the other way',
+                    'pushes you away', 'completely ignores you'],
+            begin : ['chat with', 'flirt with', 'gossip with',
+                     'tease', 'mock', 'nudge', 'taunt',
+                     'attempt to help', 'fart on', 'kiss'],
+            empty : ['No one important here',
+                     'Just you here, alone',
+                     'Nothing here']
+        };
+
+    player = {
+        'x'      : 36,
+        'y'      : 26,
+        'steps'  : 0,
+        'skill'  : 0,
+        'social' : 0,
+        reset    : function () {
+            player.x = 36;
+            player.y = 26;
+            player.steps = 0;
+            player.skill = 0;
+            player.social = 0;
+        }
+    };
+
+    util = {
+        random : function () {
+            return Math.random();
+        },
+        random_dec : function (min, max) {
+            return Math.random() * (max - min) + min;
+        },
+        random_int : function (min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        },
+        random_array : function (source, num) {
+            var result = [],
+                r = 0,
+                i = 0;
+
+            for (i = 0; i < num; i = i + 1) {
+                r = util.random_int(0, source.length - 1);
+                result[result.length] = source[r];
+                source.splice(r, 1);
+            }
+
+            return result;
+        },
+    };
+
+    clear = {
+        all : function () {
+            clear.fg();
+            clear.bg();
+        },
+        bg : function () {
+            clear.canvas(context.bg);
+        },
+        fg : function () {
+            clear.canvas(context.fg);
+        },
+        canvas : function (ctx) {
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
+    };
 
     log = {
         line  : 0,
@@ -82,58 +164,6 @@
 
             log.wrote();
         },
-    };
-    util = {
-        random : function () {
-            return Math.random();
-        },
-        random_dec : function (min, max) {
-            return Math.random() * (max - min) + min;
-        },
-        random_int : function (min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        },
-        random_array : function (source, num) {
-            var result = [],
-                r = 0,
-                i = 0;
-
-            for (i = 0; i < num; i = i + 1) {
-                r = util.random_int(0, source.length - 1);
-                result[result.length] = source[r];
-                source.splice(r, 1);
-            }
-
-            return result;
-        },
-    };
-
-    words = {
-        names : ['Alex', 'Andy', 'Ash', 'Bobbi', 'Cass', 'Cassi', 'Charli',
-                 'Chris', 'Danni', 'Eddy', 'Fran', 'Franki', 'Franni',
-                 'Freddi', 'Gabbi', 'Georgie', 'Izzi', 'Jacki', 'Jay',
-                 'Jess', 'Jerri', 'Joey', 'Joss', 'Kel', 'Kris', 'Liv',
-                 'Lou', 'Louie', 'Maddi', 'Mandi', 'Manni', 'Matti', 'Max',
-                 'Mel', 'Micki', 'Nat', 'Nicki', 'Oli', 'Pat', 'Patti',
-                 'Robbi', 'Ronni', 'Sacha', 'Sal', 'Sam', 'Sammi', 'Sandi',
-                 'Shelli', 'Terri', 'Theo', 'Val', 'Vic'],
-        moods : ['infuriated', 'angry', 'frustrated', 'annoyed', 'uptight',
-                 'anxious', 'tense', 'stressed', 'withdrawn', 'worried',
-                 'disinterested', 'indifferent', 'mild', 'calm', 'relaxed',
-                 'content', 'glad', 'flirty', 'happy', 'cheerful'],
-        win  : ['laughs', 'high fives you', 'hugs you',
-                'giggles', 'smiles', 'fist bumps you',
-                'winks at you', 'whispers in your ear',
-                'waves at you'],
-        fail : ['cries', 'slaps you', 'groans', 'screams',
-                'sobs', 'ignores you', 'looks the other way',
-                'pushes you away', 'completely ignores you'],
-        begin : ['chat with', 'flirt with', 'gossip with',
-                 'tease', 'mock', 'nudge', 'taunt',
-                 'attempt to help', 'fart on', 'kiss'],
-        empty : ['No one important here',
-                 'Just you here, alone',
-                 'Nothing here']
     };
 
     npc = {
@@ -281,25 +311,6 @@
         }
     };
 
-    clear = {
-        all : function () {
-            clear.fg();
-            clear.bg();
-        },
-        canvas : function (ctx) {
-            ctx.clearRect(0,
-                          0,
-                          ctx.canvas.width,
-                          ctx.canvas.height);
-        },
-        bg : function () {
-            clear.canvas(context.bg);
-        },
-        fg : function () {
-            clear.canvas(context.fg);
-        }
-    };
-
     draw = {
         all : function () {
             draw.grid();
@@ -444,6 +455,38 @@
                 logic.interact();
             }
         },
+
+        interact : function () {
+            var cell = map.at_cell(player.x, player.y);
+
+            if (cell.type === 'exit') {
+                logic.end();
+            } else if (cell.type === 'npc') {
+                logic.socialise(cell.npc);
+            } else {
+                log.add(npc.chat.empty());
+            }
+        },
+
+        update : function (e) {
+            if (state === 'PLAY') {
+                logic.handle_input(e);
+                clear.fg();
+                draw.map_entities();
+                draw.ui_content();
+            } else if (state === 'START') {
+                log.add("It's 5:00 pm. Time to go home");
+                state = 'PLAY';
+            } else if (state === 'END') {
+                init.setup();
+            } else {
+                log.add("Something went wrong");
+                log.add("Please reload the web page");
+            }
+
+            log.write();
+        },
+
         socialise : function (n) {
             var social_calc = 0,
                 mood_calc = 0,
@@ -500,36 +543,6 @@
                 }
             }
         },
-        interact : function () {
-            var cell = map.at_cell(player.x, player.y);
-
-            if (cell.type === 'exit') {
-                logic.end();
-            } else if (cell.type === 'npc') {
-                logic.socialise(cell.npc);
-            } else {
-                log.add(npc.chat.empty());
-            }
-        },
-
-        update : function (e) {
-            if (state === 'PLAY') {
-                logic.handle_input(e);
-                clear.fg();
-                draw.map_entities();
-                draw.ui_content();
-            } else if (state === 'START') {
-                log.add("It's 5:00 pm. Time to go home");
-                state = 'PLAY';
-            } else if (state === 'END') {
-                init.setup();
-            } else {
-                log.add("Something went wrong");
-                log.add("Please reload the web page");
-            }
-
-            log.write();
-        }
     };
 
     init = {
@@ -593,20 +606,6 @@
             log.write();
 
         },
-    };
-    player = {
-        'x'      : 36,
-        'y'      : 26,
-        'steps'  : 0,
-        'skill'  : 0,
-        'social' : 0,
-        reset    : function () {
-            player.x = 36;
-            player.y = 26;
-            player.steps = 0;
-            player.skill = 0;
-            player.social = 0;
-        }
     };
 
     init.setup();
