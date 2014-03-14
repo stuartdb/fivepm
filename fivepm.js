@@ -366,7 +366,7 @@
                 var i, j;
                 for (i = 0; i < map.data.length; i = i + 1) {
                     for (j = 0; j < map.data[i].length; j = j + 1) {
-                        draw.at_cell(bg_context, j, i, map.data[i][j]);
+                        draw.cell(bg_context, j, i, map.data[i][j]);
                     }
                 }
             },
@@ -375,16 +375,16 @@
                 var i = 0;
 
                 for (i = 0; i < npc.list.length; i = i + 1) {
-                    draw.at_cell(fg_context,
+                    draw.cell(fg_context,
                                  npc.list[i].x,
                                  npc.list[i].y,
                                  '&');
                 }
 
-                draw.at_cell(fg_context, player.x, player.y, '@');
+                draw.cell(fg_context, player.x, player.y, '@');
             },
 
-            at_cell : function (context, x, y, cell) {
+            cell : function (context, x, y, cell) {
                 context.fillStyle = map.legend[cell].color;
                 context.fillRect(grid.x + (x * grid.cell),
                                  grid.y + (y * grid.cell),
