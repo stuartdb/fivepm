@@ -202,11 +202,16 @@
         list : [],
         count : function (property) {
             var i  = 0,
+                j = 0,
+                n = [],
                 count = 0;
 
-            for (i = 0; i < npc.list.length; i = i + 1) {
-                if (npc.list[i][property] === true) {
-                    count = count + 1;
+            for (i = 0; i < map.all.length; i = i + 1) {
+                n = map.all[i].npcs;
+                for (j = 0; j < n.length; j = j + 1) {
+                    if (n[j][property] === true) {
+                        count = count + 1;
+                    }
                 }
             }
 
@@ -492,10 +497,10 @@
                 return cell;
             }
 
-            for (i = 0; i < npc.list.length; i = i + 1) {
-                if (npc.list[i].x === x && npc.list[i].y === y) {
+            for (i = 0; i < m.npcs.length; i = i + 1) {
+                if (m.npcs[i].x === x && m.npcs[i].y === y) {
                     cell = maps.legend['&'];
-                    cell.npc = npc.list[i];
+                    cell.npc = m.npcs[i];
                     break;
                 }
             }
@@ -554,8 +559,8 @@
                 i = 0,
                 ctx = context.fg;
 
-            for (i = 0; i < npc.list.length; i = i + 1) {
-                n = npc.list[i];
+            for (i = 0; i < map.current.npcs.length; i = i + 1) {
+                n = map.current.npcs[i];
 
                 if (n.enemy === true) {
                     draw.cell(ctx, n.x, n.y, '-');
@@ -767,17 +772,26 @@
             map.current = map.all[0];
         },
 
-        generate_npcs : function () {
+        generate_all_npcs : function () {
+            var i = 0;
+
+            for (i = 0; i < map.all.length; i = i + 1) {
+                init.generate_npcs(map.all[i]);
+            }
+        },
+
+        generate_npcs : function (m) {
             var i = 0,
-                npcs = 0,
+                npc_num = 0,
                 locations = [];
 
-            npc.list = [];
-            npcs = util.random_int(10, 20);
-            locations = util.random_array(map.empties(map.current), npcs);
+            m.npcs = [];
 
-            for (i = 0; i < npcs; i = i + 1) {
-                npc.list[i] = {
+            npc_num = util.random_int(m.npc_min, m.npc_max);
+            locations = util.random_array(map.empties(m), npc_num);
+
+            for (i = 0; i < npc_num; i = i + 1) {
+                m.npcs[i] = {
                     'name'   : words.names[
                         util.random_int(0, words.names.length - 1)
                     ],
@@ -799,7 +813,7 @@
             player.reset();
 
             init.generate_map();
-            init.generate_npcs();
+            init.generate_all_npcs();
 
             canvas.bg = document.getElementById('fivepmbg');
             context.bg = canvas.bg.getContext('2d');
