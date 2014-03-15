@@ -2,26 +2,104 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <title>fivepm</title>
     <link rel="stylesheet" href="minimal.css">
     </style>
   </head>
   <body>
-    <div class="container">
+    <div id="container" class="slim">
 
-      <div class="header">
+      <div id="header" class="slim">
         <h1>fivepm</h1>
       </div>
 
-      <div class="game">
+      <div id="game" class="slim">
         <canvas id="fivepmbg" width="400" height="340"></canvas>
-        <canvas id="fivepmfg" width="400" height="340" tabindex="1"></canvas>
+        <canvas id="fivepmfg" width="400" height="340" tabindex="1">
+          Browser not supported. Sorry about that.
+        </canvas>
 
-        <div class="log">
+        <div id="logcontainer" class="nine">
           <p id="log">Loading fivepm...</p>
           <p id="oldlog"></p>
         </div>
+      </div>
 
+      <div id="help" class="slim">
+        <h1>help</h1>
+
+        <div id="helpcontent" class="nine">
+          <p>
+            It's 5:00pm and it's time for you to go home. You are represented
+            by the small black square.
+          </p>
+          <img src="img/player.png" alt="the player">
+          <p>
+            To move around use the W A S D keys. The I J K L keys
+            will also move you around and are probably a better alternative
+            for lefties. To interact with objects, use the E or U keys, which
+            ever you prefer.
+          </p>
+          <p>
+            The goal of the game is to get to the exit, which is located a
+            number of floors below the starting location in the lobby. The exit
+            doors are the yellow squares.
+          </p>
+          <img src="img/exit.png" alt="the exit">
+          <p>
+            To go down a floor, use the stairs. Stairs going down are indicated
+            by the purple square.
+          </p>
+          <img src="img/stairs.png" alt="stairs">
+          <p>
+            Getting out of the office is only the main goal. The secondary goal
+            is to increase your social standing in the work place. You start
+            with no social standing and no social skills. As you walk around
+            the office you will be able to sense the moods of your fellow work
+            mates. Walk over one of your co-workers to sense their mood. They
+            are represented by a blue square.
+          </p>
+          <img src="img/npc.png" alt="an npc">
+          <p>
+            Once you are in the same cell as a co-worker use the interaction
+            key (E or U) to interact with them. Their personality, mood and
+            social status are taken into account to determine if you
+            successfully socialised with them.
+          </p>
+          <img src="img/social.png" alt"npc interaction">
+          <p>
+            Depending on the outcome, they will either be your friend or your
+            enemy. Tough break, but first impressions count. If they turn out
+            to be your friend, they will turn green. If they become your enemy,
+            they will go red.
+          </p>
+          <img src="img/friend.png" alt="a friendly npc">
+          <img src="img/enemy.png" alt="one of your enemies">
+          <p>
+            You can keep tabs on your social status within the office and how
+            your social skills are coming along. The UI bars at the bottom of
+            the screen represents your progress. The black bar is for your
+            social skills, this can only improve thankfully. The blue bar
+            represents your social status, this will increase and decrease
+            depending on the outcome of your interactions and the social status
+            of the co-worker.
+          </p>
+          <img src="img/ui.png" alt="the ui bars">
+          <p>
+            When you have had enough of socialising, head to the exit in the
+            lobby. You will be rewarded with a summary of your actions and the
+            option to start again. Try to see how many friends or enemies you
+            can make!
+          </p>
+          <img src="img/finish.png" alt="a game summary">
+          <h1>about</h1>
+          <p>
+            fivepm was created in less then 7 days for the 2014 7drl challenge.
+            Check out the source code
+            <a href="https://github.com/stuartdb/fivepm">github</a>.
+          </p>
+        </div>
       </div>
 
     </div>

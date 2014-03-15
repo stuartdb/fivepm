@@ -1,51 +1,66 @@
-body {
-    font-family: sans-serif;
-    margin: 0;
-    padding: 0;
+* {
+    border : 0px;
+    margin: 0px auto;
+    padding: 0px;
 }
 
-.container {
-    position: relative;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 0;
+html, body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
 }
 
-.game {
-    position: relative;
-    max-width: 400px;
-    margin: 0 auto;
+h1 {
+    text-align: center;
+    margin: 10px;
+    padding: 10px;
+    font-size: 40px;
+    font-weight: 400;
 }
 
 canvas {
     position: absolute;
     left: 0;
     top: 0;
-    margin: 0;
-    padding: 0;
 }
 canvas:focus {
-    outline: 0;
+    outline: 0px;
 }
 
-.log {
-    position: relative;
-    top: 340px;
+.slim {
+    width: 400px;
+    margin: 0px auto;
+}
+
+.nine {
     padding: 9.5px;
-    margin: 0px;
 }
 
-.log p {
-    font-size: 12px;
-    margin: 0px;
+#container {
+    position: relative;
+}
+
+#game {
+    position: relative;
+}
+
+#help {
+    position: absolute;
+    top: 800px;
+    padding-bottom: 100px;
+}
+
+#logcontainer {
+    position: relative;
+    top: 350px;
 }
 
 #log {
-    font-weight: bold;
+    font-weight: 700;
 }
 
 #oldlog {
-    font-weight: normal;
+    font-weight: 400;
 }
 
 #fivepmbg {
@@ -54,8 +69,4 @@ canvas:focus {
 
 #fivepmfg {
     z-index: 1;
-}
-
-h1{
-    text-align: center;
 }
