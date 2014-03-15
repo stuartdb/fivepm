@@ -462,15 +462,15 @@
         progress : 0,
         current  : {},
         all      : [],
-        empties : function () {
+        empties : function (m) {
             var i = 0,
                 j = 0,
                 cell,
                 empties = [];
 
-            for (i = 0; i < map.current.layout.length; i = i + 1) {
-                for (j = 0; j < map.current.layout[i].length; j = j + 1) {
-                    cell = map.at_cell(j, i);
+            for (i = 0; i < m.layout.length; i = i + 1) {
+                for (j = 0; j < m.layout[i].length; j = j + 1) {
+                    cell = map.at_cell(m, j, i);
                     if (cell.type === 'empty') {
                         empties[empties.length] = {
                             x : j,
@@ -482,11 +482,11 @@
             return empties;
         },
 
-        at_cell : function (x, y) {
+        at_cell : function (m, x, y) {
             var cell,
                 i = 0;
 
-            cell = maps.legend[map.current.layout[y][x]];
+            cell = maps.legend[m.layout[y][x]];
 
             if (cell.type !== 'empty') {
                 return cell;
@@ -602,7 +602,7 @@
         move_player : function (mx, my) {
             var x = player.x + mx,
                 y = player.y + my,
-                cell = map.at_cell(x, y);
+                cell = map.at_cell(map.current, x, y);
 
             if (cell.type === 'solid') {
                 return;
@@ -658,7 +658,7 @@
         },
 
         interact : function () {
-            var cell = map.at_cell(player.x, player.y);
+            var cell = map.at_cell(map.current, player.x, player.y);
 
             if (cell.type === 'exit') {
                 logic.end();
@@ -774,7 +774,7 @@
 
             npc.list = [];
             npcs = util.random_int(10, 20);
-            locations = util.random_array(map.empties(), npcs);
+            locations = util.random_array(map.empties(map.current), npcs);
 
             for (i = 0; i < npcs; i = i + 1) {
                 npc.list[i] = {
