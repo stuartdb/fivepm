@@ -523,6 +523,7 @@
         },
         bg : function () {
             draw.grid();
+            draw.ui();
             draw.map();
         },
         grid : function () {
