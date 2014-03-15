@@ -132,38 +132,33 @@
         debug : function (obj) {
             console.log(obj);
         },
-        wrote : function () {
-            log.line = log.data.length;
-        },
-        write_lines : function (p, line_from, line_to) {
-            var i = line_from;
-            for (i; i < line_to; i = i + 1) {
-                p.innerHTML = log.data[i] + '<br>' + p.innerHTML;
-            }
-        },
         write : function () {
-            var p = document.getElementById('log'),
-                oldp = document.getElementById('oldlog'),
-                limit_line = log.line - 10,
-                new_line = log.line;
+            var node = document.getElementById('log'),
+                old_node = document.getElementById('oldlog'),
+                from = log.line - 10,
+                to = log.line;
 
             if (log.data.length <= 0) {
                 return;
             }
 
-            p.innerHTML = '';
-            oldp.innerHTML = '';
+            node.innerHTML = '';
+            old_node.innerHTML = '';
 
-            if (limit_line < 0 || limit_line > log.data.length) {
-                limit_line = 0;
+            if (from < 0 || from > log.data.length) {
+                from = 0;
             } else {
-                limit_line = new_line - 10;
+                from = to - 10;
             }
 
-            log.write_lines(oldp, limit_line, new_line);
-            log.write_lines(p, new_line, log.data.length);
-
-            log.wrote();
+            log.write_lines(node, to, log.data.length);
+            log.write_lines(old_node, from, to);
+            log.line = log.data.length;
+        },
+        write_lines : function (node, from, to) {
+            for (from; from < to; from = from + 1) {
+                node.innerHTML = log.data[from] + '<br>' + node.innerHTML;
+            }
         },
     };
 
