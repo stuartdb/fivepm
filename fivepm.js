@@ -109,8 +109,7 @@
                      'Press any key to start'],
             progress : ['You have just entered the ', 'This is the ',
                        'This floor holds the ', 'Entering the ',
-                       'This place looks like the ', 'Glad to be in the ',
-                       'Oh, the ', 'Welcome to the ', 'Just want to leave ']
+                       'This place looks like the ']
         };
 
     player = {
