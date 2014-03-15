@@ -97,7 +97,11 @@
                      'You can sense co-worker moods by walking into them',
                      'Use E or U to interact',
                      'Read the help below for more detailed instructions',
-                     'Press any key to start']
+                     'Press any key to start'],
+            progress : ['You have just entered the ', 'This is the ',
+                       'This floor holds the ', 'Entering the ',
+                       'This place looks like the ', 'Glad to be in the ',
+                       'Oh, the ', 'Welcome to the ', 'Just want to leave ']
         };
 
     player = {
@@ -222,6 +226,11 @@
             empty : function () {
                 return words.empty[
                     util.random_int(0, words.empty.length - 1)
+                ];
+            },
+            progress : function () {
+                return words.progress[
+                    util.random_int(0, words.progress.length - 1)
                 ];
             },
             friend : function (n) {
@@ -754,7 +763,7 @@
         progress : function (num) {
             map.progress = map.progress + num;
             map.current = map.all[map.progress];
-            log.add('This is the ' + map.current.name);
+            log.add(npc.chat.progress() + map.current.name);
             player.x = map.current.spawn.x;
             player.y = map.current.spawn.y;
             clear.bg();
