@@ -60,7 +60,14 @@
                      'attempt to help', 'fart on', 'kiss'],
             empty : ['No one important here',
                      'Just you here, alone',
-                     'Nothing here']
+                     'Nothing here'],
+            intro : ['Welcome to fivepm',
+                     'A 2014 7drl',
+                     'Use WASD or IJKL to move around',
+                     'You can sense co-worker moods by walking into them',
+                     'Use E or U to interact',
+                     'Read the help below for more detailed instructions',
+                     'Press any key to start']
         };
 
     player = {
@@ -129,6 +136,9 @@
         add   : function (text) {
             log.data[log.data.length] = text;
         },
+        add_array : function (arr) {
+            log.data = log.data.concat(arr);
+        },
         debug : function (obj) {
             console.log(obj);
         },
@@ -194,7 +204,6 @@
                 return n.name + ' seems ' + words.moods[n.mood];
             },
         },
-        list : [],
         count : function (property) {
             var i  = 0,
                 j = 0,
@@ -542,7 +551,8 @@
         },
 
         map : function () {
-            var i, j;
+            var i = 0,
+                j = 0;
             for (i = 0; i < map.current.layout.length; i = i + 1) {
                 for (j = 0; j < map.current.layout[i].length; j = j + 1) {
                     draw.cell(context.bg, j, i, map.current.layout[i][j]);
@@ -768,14 +778,6 @@
             map.current = map.all[0];
         },
 
-        generate_all_npcs : function () {
-            var i = 0;
-
-            for (i = 0; i < map.all.length; i = i + 1) {
-                init.generate_npcs(map.all[i]);
-            }
-        },
-
         generate_npcs : function (m) {
             var i = 0,
                 npc_num = 0,
@@ -802,6 +804,14 @@
             }
         },
 
+        generate_all_npcs : function () {
+            var i = 0;
+
+            for (i = 0; i < map.all.length; i = i + 1) {
+                init.generate_npcs(map.all[i]);
+            }
+        },
+
         setup : function () {
             state = 'START';
 
@@ -818,18 +828,10 @@
             canvas.fg.focus();
             canvas.fg.addEventListener('keydown', logic.update, false);
 
-            log.add("Welcome to fivepm");
-            log.add("A 2014 7drl");
-            log.add("Use WASD or IJKL to move around");
-            log.add("You can sense co-worker moods by walking into them");
-            log.add("Use E or U to interact");
-            log.add("Read the help below for more detailed instructions");
-            log.add("Press any key to start");
-
+            log.add_array(words.intro);
             clear.all();
             draw.all();
             log.write();
-
         },
     };
 
