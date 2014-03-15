@@ -714,12 +714,11 @@
         },
 
         socialise : function (n) {
-            var social_calc = 0,
-                mood_calc = 0,
-                rand_calc = 0,
-                calc = 0,
-                skill_mod = 0,
-                social_mod = 0;
+            var social = 0,
+                bonus = 0,
+                mood = 0,
+                rand = 0,
+                result = 0;
 
             if (n.enemy === true) {
                 log.add(npc.chat.enemy(n));
@@ -733,39 +732,32 @@
 
             log.add(npc.chat.begin(n));
 
-            social_calc = player.social - n.social;
-            mood_calc = ((n.mood + 1) * (200 / words.moods.length)) - 100;
-            rand_calc = util.random_int(-25, 25);
-            calc = mood_calc + n.dna + rand_calc;
-            social_mod = Math.abs(Math.floor(social_calc / 20));
-            skill_mod = Math.floor(social_mod / 2);
+            mood = ((n.mood + 1) * (200 / words.moods.length)) - 100;
+            rand = util.random_int(-25, 25);
+            result = mood + n.dna + rand;
+            social = player.social - n.social;
+            bonus = Math.abs(Math.floor(social / 10));
 
-
-            if (calc > 0) {
+            if (result > 0) {
                 n.friend = true;
                 log.add(npc.chat.win(n));
+                player.skill += 2;
+                player.social += bonus;
 
-                if (player.skill + skill_mod > 100) {
+                if (player.skill > 100) {
                     player.skill = 100;
-                } else {
-                    player.skill = player.skill + skill_mod;
                 }
 
-                if (player.social + social_mod > 100) {
+                if (player.social > 100) {
                     player.social = 100;
-                } else {
-                    player.social = player.social + social_mod;
                 }
-            }
-
-            if (calc <= 0) {
+            } else {
                 n.enemy = true;
                 log.add(npc.chat.fail(n));
+                player.social -= bonus;
 
-                if (player.social - social_mod < 0) {
+                if (player.social < 0) {
                     player.social = 0;
-                } else {
-                    player.social = player.social - social_mod;
                 }
             }
         },
