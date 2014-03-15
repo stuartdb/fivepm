@@ -100,7 +100,7 @@
                 r = 0,
                 i = 0;
 
-            for (i = 0; i < num; i = i + 1) {
+            for (i = 0; i < num; i += 1) {
                 r = util.random_int(0, source.length - 1);
                 result[result.length] = source[r];
                 source.splice(r, 1);
@@ -166,7 +166,7 @@
             log.line = log.data.length;
         },
         write_lines : function (node, from, to) {
-            for (from; from < to; from = from + 1) {
+            for (from; from < to; from += 1) {
                 node.innerHTML = log.data[from] + '<br>' + node.innerHTML;
             }
         },
@@ -210,9 +210,9 @@
                 n = [],
                 count = 0;
 
-            for (i = 0; i < map.all.length; i = i + 1) {
+            for (i = 0; i < map.all.length; i += 1) {
                 n = map.all[i].npcs;
-                for (j = 0; j < n.length; j = j + 1) {
+                for (j = 0; j < n.length; j += 1) {
                     if (n[j][property] === true) {
                         count = count + 1;
                     }
@@ -477,8 +477,8 @@
                 cell,
                 empties = [];
 
-            for (i = 0; i < m.layout.length; i = i + 1) {
-                for (j = 0; j < m.layout[i].length; j = j + 1) {
+            for (i = 0; i < m.layout.length; i += 1) {
+                for (j = 0; j < m.layout[i].length; j += 1) {
                     cell = map.at_cell(m, j, i);
                     if (cell.type === 'empty') {
                         empties[empties.length] = {
@@ -501,7 +501,7 @@
                 return cell;
             }
 
-            for (i = 0; i < m.npcs.length; i = i + 1) {
+            for (i = 0; i < m.npcs.length; i += 1) {
                 if (m.npcs[i].x === x && m.npcs[i].y === y) {
                     cell = maps.legend['&'];
                     cell.npc = m.npcs[i];
@@ -537,13 +537,13 @@
             context.bg.strokeStyle = colors.grid;
 
             context.bg.beginPath();
-            for (x; x < grid.width; x = x + grid.cell) {
+            for (x; x < grid.width; x += grid.cell) {
                 context.bg.moveTo(x, grid.y);
                 context.bg.lineTo(x, grid.height);
 
             }
 
-            for (y; y < grid.height; y = y + grid.cell) {
+            for (y; y < grid.height; y += grid.cell) {
                 context.bg.moveTo(grid.x, y);
                 context.bg.lineTo(grid.width, y);
             }
@@ -553,8 +553,8 @@
         map : function () {
             var i = 0,
                 j = 0;
-            for (i = 0; i < map.current.layout.length; i = i + 1) {
-                for (j = 0; j < map.current.layout[i].length; j = j + 1) {
+            for (i = 0; i < map.current.layout.length; i += 1) {
+                for (j = 0; j < map.current.layout[i].length; j += 1) {
                     draw.cell(context.bg, j, i, map.current.layout[i][j]);
                 }
             }
@@ -565,7 +565,7 @@
                 i = 0,
                 ctx = context.fg;
 
-            for (i = 0; i < map.current.npcs.length; i = i + 1) {
+            for (i = 0; i < map.current.npcs.length; i += 1) {
                 n = map.current.npcs[i];
 
                 if (n.enemy === true) {
@@ -780,7 +780,7 @@
             npc_num = util.random_int(m.npc_min, m.npc_max);
             locations = util.random_array(map.empties(m), npc_num);
 
-            for (i = 0; i < npc_num; i = i + 1) {
+            for (i = 0; i < npc_num; i += 1) {
                 m.npcs[i] = {
                     'name'   : words.names[
                         util.random_int(0, words.names.length - 1)
@@ -799,7 +799,7 @@
         generate_all_npcs : function () {
             var i = 0;
 
-            for (i = 0; i < map.all.length; i = i + 1) {
+            for (i = 0; i < map.all.length; i += 1) {
                 init.generate_npcs(map.all[i]);
             }
         },
