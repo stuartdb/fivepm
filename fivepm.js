@@ -348,7 +348,7 @@
             {
                 name    : 'server room',
                 npc_max : 15,
-                npc_min : 5,
+                npc_min : 7,
                 spawn   : {
                     x : 2,
                     y : 19
@@ -385,7 +385,7 @@
             {
                 name    : 'boardroom',
                 npc_max : 15,
-                npc_min : 5,
+                npc_min : 7,
                 spawn   : {
                     x : 18,
                     y : 25
@@ -422,7 +422,7 @@
             },
             {
                 name    : 'cubicles',
-                npc_max : 30,
+                npc_max : 40,
                 npc_min : 20,
                 spawn   : {
                     x : 2,
@@ -459,8 +459,8 @@
             },
             {
                 name    : 'lobby',
-                npc_max : 5,
-                npc_min : 3,
+                npc_max : 10,
+                npc_min : 5,
                 spawn   : {
                     x : 19,
                     y : 25
