@@ -36,6 +36,11 @@ canvas:focus {
     padding: 9.5px;
 }
 
+img.center {
+    display: block;
+    margin: 0px auto;
+}
+
 #container {
     position: relative;
 }
